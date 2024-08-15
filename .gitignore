@@ -1,0 +1,87 @@
+# .NET Core
+*.dll
+*.exe
+*.pdb
+*.dbmdl
+*.bak
+*.log
+*.vs
+.vscode
+.idea
+*.swp
+*.suo
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+*.nupkg
+*.snk
+*.swp
+*.dmg
+*.pem
+*.key
+*.pfx
+*.p12
+*.csr
+*.asc
+*.cspkg
+*.wsp
+*.publishsettings
+*.sql
+*.suo
+*.csproj.user
+*.csproj.nuget.g.props
+*.csproj.nuget.g.targets
+*.csproj.nuget.props
+*.csproj.nuget.targets
+*.cache
+*.builds
+*.tmp
+*.vscode
+*.dotnet/
+*.nuget/
+*.nupkg
+*.dmg
+*.nupkg
+*.snupkg
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# OS-specific files
+.DS_Store
+*.swp
+*.swo
+Thumbs.db
+ehthumbs.db
+
+# NUGET
+*.nupkg
+*.snupkg
+*.nupkg.*
+
+# Rider
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# ASP.NET Core
+wwwroot/
+secrets.json
+*.dockerfile
+
+# Logs
+logs/
+*.log
+
+# Build directories
+bin/
+obj/
+out/

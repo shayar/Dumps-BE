@@ -34,7 +34,7 @@ To get started with the project, follow these steps:
    dotnet run
    ```
 
-This will start the development server on `http://localhost:5000`.
+This will start the development server on `http://localhost:5001`.
 
 ## Project Structure
 
