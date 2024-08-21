@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  postgres:
+  postgres-dumps:
     image: postgres:16.4
     container_name: dumps-postgres
     environment:
@@ -22,7 +22,7 @@ services:
     ports:
       - "5001:5001"
     depends_on:
-      - postgres
+      - postgres-dumps
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Database=dumps;Username=dumps;Password=dumps_pass
