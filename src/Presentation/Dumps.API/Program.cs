@@ -9,6 +9,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+    });
+});
+
 // Configuration of MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
@@ -27,6 +35,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+//Cors Policy
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 
