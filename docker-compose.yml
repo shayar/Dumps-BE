@@ -4,7 +4,7 @@ services:
   dumps-api:
     build:
       context: .
-      dockerfile: ./src/Presentation/Dumps.API/Dockerfile
+      dockerfile: ./src/Presentation/Dumps.Api/Dockerfile
     ports:
       - "8080:8080"
       - "8081:8081"
@@ -13,6 +13,7 @@ services:
       - ConnectionStrings__DefaultConnection=Host=postgres;Database=dumps_db;Username=postgres;Password=dumps_pass
     depends_on:
       - postgres
+      - migrations
 
   postgres:
     image: postgres:latest
@@ -24,6 +25,18 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  migrations:
+    container_name: service-migrations
+    build:
+      context: .
+      dockerfile: ./src/Presentation/Dumps.Api/Dockerfile
+      target: migrations
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=dumps_db;Username=postgres;Password=dumps_pass
+    depends_on:
+      - postgres
 
 volumes:
   postgres_data:
