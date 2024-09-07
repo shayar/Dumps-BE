@@ -1,4 +1,7 @@
-using Dumps.API.Middleware;
+﻿using Dumps.API.Middleware;
+using Dumps.Application.Extensions;
+using Dumps.Infrastructure.Extensions;
+using Dumps.Persistence.Extensions;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddPersistence(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -45,9 +52,6 @@ builder.Services.AddCors(opt =>
     });
 });
 
-// Configuration of MediatR
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
-
 var app = builder.Build();
 
 
@@ -70,5 +74,8 @@ app.UseCors("CorsPolicy");
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Add health check endpoint
+app.MapHealthChecks("/health");
 
 app.Run();
