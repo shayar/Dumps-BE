@@ -12,13 +12,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Infrastructure\Dumps.Persistence\Dumps.Persistence.csproj" />
     <ProjectReference Include="..\Dumps.Domain\Dumps.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Command\" />
-    <Folder Include="DTO\" />
     <Folder Include="Common\" />
+    <Folder Include="DTO\Response\" />
     <Folder Include="Helper\" />
     <Folder Include="Query\" />
   </ItemGroup>
