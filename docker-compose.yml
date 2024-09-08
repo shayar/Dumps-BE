@@ -1,31 +1,42 @@
 version: '3.8'
 
 services:
-  postgres-dumps:
-    image: postgres:16.4
-    container_name: dumps-postgres
+  dumps-api:
+    build:
+      context: .
+      dockerfile: ./src/Presentation/Dumps.Api/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
     environment:
-      POSTGRES_USER: dumps
-      POSTGRES_PASSWORD: dumps-pass
-      POSTGRES_DB: dumps
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=dumps_db;Username=postgres;Password=dumps_pass
+    depends_on:
+      - postgres
+      - migrations
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dumps_pass
+      POSTGRES_DB: dumps_db
     ports:
       - "5432:5432"
     volumes:
-      - dumps_postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
 
-  web:
+  migrations:
+    container_name: service-migrations
     build:
-      context: ./
-      dockerfile: Dockerfile
-    container_name: dumps
-    command: sh -c "echo 'Listing files in /app:' && ls -al /app && echo 'Current working directory:' && pwd && dotnet Web.dll"
-    ports:
-      - "5001:5001"
-    depends_on:
-      - postgres-dumps
+      context: .
+      dockerfile: ./src/Presentation/Dumps.Api/Dockerfile
+      target: migrations
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=postgres;Database=dumps;Username=dumps;Password=dumps_pass
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=dumps_db;Username=postgres;Password=dumps_pass
+    depends_on:
+      - postgres
 
 volumes:
-  dumps_postgres_data:
+  postgres_data:

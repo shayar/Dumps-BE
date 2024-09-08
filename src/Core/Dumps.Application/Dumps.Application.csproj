@@ -8,16 +8,17 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.4.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Infrastructure\Dumps.Persistence\Dumps.Persistence.csproj" />
     <ProjectReference Include="..\Dumps.Domain\Dumps.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Command\" />
-    <Folder Include="DTO\" />
     <Folder Include="Common\" />
+    <Folder Include="DTO\Response\" />
     <Folder Include="Helper\" />
     <Folder Include="Query\" />
   </ItemGroup>
