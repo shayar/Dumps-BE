@@ -3,8 +3,20 @@ using Dumps.Application.Extensions;
 using Dumps.Infrastructure.Extensions;
 using Dumps.Persistence.Extensions;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.Seq("http://seq:5341")
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 
@@ -59,6 +71,9 @@ var app = builder.Build();
 
 // custom error handling middleware
 app.UseMiddleware<ErrorHandlingMiddleware>();
+
+// Custom Serilog middleware for request logging
+app.UseMiddleware<SerilogMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
