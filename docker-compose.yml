@@ -14,7 +14,6 @@ services:
     depends_on:
       - postgres
       - migrations
-      - seq
 
   postgres:
     image: postgres:latest
@@ -38,13 +37,6 @@ services:
       - ConnectionStrings__DefaultConnection=Host=postgres;Database=dumps_db;Username=postgres;Password=dumps_pass
     depends_on:
       - postgres
-  
-  seq:
-    image: datalust/seq:latest
-    ports:
-      - "5341:5341"  # Expose the Seq UI on port 5341
-    environment:
-      - ACCEPT_EULA=Y  # Accept the Seq EULA
 
 volumes:
   postgres_data:
