@@ -36,7 +36,7 @@ RUN dotnet restore "./src/Infrastructure/Dumps.Infrastructure/Dumps.Infrastructu
 RUN dotnet tool install --version 8.0.0 --global dotnet-ef
 ENV PATH="$PATH:/root/.dotnet/tools"
 COPY . .
-ENTRYPOINT ["dotnet-ef", "database", "update", "--project", "src/Infrastructure/Dumps.Infrastructure/", "--startup-project", "src/Presentation/Dumps.API/"]
+ENTRYPOINT ["dotnet-ef", "database", "update", "--project", "src/Infrastructure/Dumps.Persistence/", "--startup-project", "src/Presentation/Dumps.API/"]
 
 # Final image for the application
 FROM base AS final
