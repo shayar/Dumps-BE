@@ -1,7 +1,12 @@
 ﻿using Dumps.API.Middleware;
 using Dumps.Application.Extensions;
+using Dumps.Domain.Entities;
 using Dumps.Infrastructure.Extensions;
+using Dumps.Persistence.DbContext;
 using Dumps.Persistence.Extensions;
+using Dumps.Persistence.SeedData;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -61,8 +66,23 @@ builder.Services.AddCors(opt =>
     });
 });
 
-var app = builder.Build();
+// Registering Identity
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
+{
+    // configure identity options
+    o.Password.RequireDigit = true;
+    o.Password.RequireLowercase = true;
+    o.Password.RequireUppercase = true;
+    o.Password.RequireNonAlphanumeric = true;
+    o.Password.RequiredLength = 6;
+    o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    o.Lockout.MaxFailedAccessAttempts = 5;
+    o.User.RequireUniqueEmail = true;
+})
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
 
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
@@ -86,5 +106,12 @@ app.UseCors("CorsPolicy");
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Seed Roles and Admin User
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await SeedData.SeedRolesAndAdminUserAsync(services);
+}
 
 app.Run();
