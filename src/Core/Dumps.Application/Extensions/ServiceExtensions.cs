@@ -15,7 +15,7 @@ namespace Dumps.Application.Extensions
 
             services.AddFluentValidationAutoValidation()
                 .AddValidatorsFromAssemblyContaining<
-                    CreateContactUsCommand>(); // registers validators from Assembly where CreateContactUsCommand is located
+                    CreateContactUsCommand>(); // registers validators from Assembly where CreateContactUsCommand is locatedinitia
             // Register any application-specific services here
             // services.AddScoped<IApplicationService, ApplicationService>();
 
