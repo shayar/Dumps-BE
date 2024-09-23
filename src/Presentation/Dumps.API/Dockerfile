@@ -24,20 +24,6 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./Dumps.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Install EF Core tools and apply migrations
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS migrations
-WORKDIR /src
-COPY ["src/Infrastructure/Dumps.Infrastructure/Dumps.Infrastructure.csproj", "src/Infrastructure/Dumps.Infrastructure/"]
-COPY ["src/Infrastructure/Dumps.Persistence/Dumps.Persistence.csproj", "src/Infrastructure/Dumps.Persistence/"]
-COPY ["src/Presentation/Dumps.API/Dumps.API.csproj", "src/Presentation/Dumps.API/"]
-COPY ["src/Core/Dumps.Application/Dumps.Application.csproj", "src/Core/Dumps.Application/"]
-COPY ["src/Core/Dumps.Domain/Dumps.Domain.csproj", "src/Core/Dumps.Domain/"]
-RUN dotnet restore "./src/Infrastructure/Dumps.Infrastructure/Dumps.Infrastructure.csproj"
-RUN dotnet tool install --version 8.0.0 --global dotnet-ef
-ENV PATH="$PATH:/root/.dotnet/tools"
-COPY . .
-ENTRYPOINT ["dotnet-ef", "database", "update", "--project", "src/Infrastructure/Dumps.Persistence/", "--startup-project", "src/Presentation/Dumps.API/"]
-
 # Final image for the application
 FROM base AS final
 WORKDIR /app
