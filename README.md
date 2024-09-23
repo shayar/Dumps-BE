@@ -42,7 +42,7 @@ To get started with the project, follow these steps:
    dotnet run
    ```
 
-This will start the development server on `http://localhost:8080`.
+This will start the development server on `http://localhost:5072`.
 
 ## Run Using Docker
 2. **Install Docker**
