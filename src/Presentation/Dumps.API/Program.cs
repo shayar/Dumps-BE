@@ -73,10 +73,6 @@ builder.Services.AddCors(opt =>
         policy => { policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"); });
 });
 
-builder.Services.AddFluentValidationAutoValidation()
-    .AddValidatorsFromAssemblyContaining<
-        CreateContactUsCommand>(); // registers validators from Assembly where CreateContactUsCommand is located
-
 // Registering Identity
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
     {
