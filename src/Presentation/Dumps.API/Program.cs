@@ -1,13 +1,10 @@
 ﻿using Dumps.API.Middleware;
-using Dumps.Application.Command;
 using Dumps.Application.Extensions;
 using Dumps.Domain.Entities;
 using Dumps.Infrastructure.Extensions;
 using Dumps.Persistence.DbContext;
 using Dumps.Persistence.Extensions;
 using Dumps.Persistence.SeedData;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;

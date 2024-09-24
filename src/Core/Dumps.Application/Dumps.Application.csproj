@@ -19,9 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Common\" />
-    <Folder Include="DTO\Response\" />
     <Folder Include="Helper\" />
-    <Folder Include="Query\" />
   </ItemGroup>
 
 </Project>
