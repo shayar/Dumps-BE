@@ -111,6 +111,11 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+
+    // Apply any pending migrations at startup
+    var dbContext = services.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+
     await SeedData.SeedRolesAndAdminUserAsync(services);
 }
 
