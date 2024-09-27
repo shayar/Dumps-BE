@@ -1,6 +1,7 @@
 ﻿using Dumps.Application.DTO.Request.ContactUs;
 using Dumps.Domain.Entities;
 using Dumps.Persistence.DbContext;
+using FluentValidation;
 using MediatR;
 
 namespace Dumps.Application.Command
@@ -12,6 +13,16 @@ namespace Dumps.Application.Command
     public class Handler : IRequestHandler<CreateContactUsCommand, int>
     {
         private readonly AppDbContext _context;
+
+        public class CreateContactUsCommandValidator : AbstractValidator<CreateContactUsCommand>
+        {
+            public CreateContactUsCommandValidator()
+            {
+                RuleFor(x => x.Name).NotEmpty();
+                RuleFor(x => x.Email).NotEmpty().EmailAddress();
+                RuleFor(x => x.Message).NotEmpty();
+            }
+        }
         public Handler(AppDbContext context)
         {
             _context = context;

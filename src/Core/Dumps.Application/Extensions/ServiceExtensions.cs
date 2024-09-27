@@ -1,6 +1,4 @@
 ﻿using System.Reflection;
-using Dumps.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dumps.Application.Extensions
@@ -11,8 +9,7 @@ namespace Dumps.Application.Extensions
         {
             // Configuration of MediatR
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
-            // Register PasswordHasher
-            services.AddScoped<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
+
             // Register any application-specific services here
             // services.AddScoped<IApplicationService, ApplicationService>();
 

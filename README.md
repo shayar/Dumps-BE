@@ -20,21 +20,40 @@ To get started with the project, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-repo/backend.git
-   cd backend
+   git clone git@github.com:shayar/Dumps-BE.git
+   cd Dumps-BE
    ```
+## Run Locally
 
-2. **Install dependencies:**
+2. **Install PostgreSQL**
+    - If you haven't already, install PostgreSQL on your machine. You can find installation instructions on the [PostgreSQL official website](https://www.postgresql.org/download/).
+
+3. **Add user in PostgreSQL**
+   ```bash
+    CREATE ROLE dumps_user WITH LOGIN PASSWORD 'dumps_pass' CREATEDB;
+    ```
+4. **Install dependencies:**
    ```bash
    dotnet restore
    ```
 
-3. **Run the development server:**
+5. **Run the development server:**
    ```bash
    dotnet run
    ```
 
-This will start the development server on `http://localhost:5001`.
+This will start the development server on `http://localhost:5072`.
+
+## Run Using Docker
+2. **Install Docker**
+    - If you haven't already, install Docker on your machine. You can find installation instructions on the [Docker official website](https://docs.docker.com/get-started/get-docker/).
+
+3. **Run docker**
+    ```bash
+   docker-compose up --build 
+   ```
+
+This will start the development server on `http://localhost:8080`.
 
 ## Project Structure
 
