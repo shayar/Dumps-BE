@@ -1,0 +1,6 @@
+@Dumps.API_HostAddress = http://localhost:5072
+
+GET {{Dumps.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
