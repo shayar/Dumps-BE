@@ -20,8 +20,6 @@ namespace Dumps.Application.Extensions
                   CreateContactUsCommand>(); // registers validators from Assembly where CreateContactUsCommand is locatedinitia
             // Register any application-specific services here
             // services.AddScoped<IApplicationService, ApplicationService>();
-            // Register PasswordHasher
-            services.AddScoped<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
             return services;
         }
     }

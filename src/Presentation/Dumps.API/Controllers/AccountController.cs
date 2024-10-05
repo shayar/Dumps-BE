@@ -6,17 +6,12 @@ namespace Dumps.API.Controllers
 {
     public class AccountController : BaseController
     {
-        private readonly IMediator _mediator;
-
-        public AccountController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+      
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromForm] RegisterUserCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await Mediator.Send(command);
 
             if (result.Succeeded)
             {
