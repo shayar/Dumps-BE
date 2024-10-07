@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Text;
+﻿using System.Text;
 using Dumps.Application.Command;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -18,8 +17,8 @@ namespace Dumps.Application.Extensions
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
             services.AddFluentValidationAutoValidation()
-                .AddValidatorsFromAssemblyContaining<
-                    CreateContactUsCommand>(); // registers validators from Assembly where CreateContactUsCommand is locatedinitia
+              .AddValidatorsFromAssemblyContaining<
+                  CreateContactUsCommand>(); // registers validators from Assembly where CreateContactUsCommand is locatedinitia
             // Register any application-specific services here
             // services.AddScoped<IApplicationService, ApplicationService>();
 
@@ -43,7 +42,6 @@ namespace Dumps.Application.Extensions
                         ValidateLifetime = true
                     };
                 });
-
             return services;
         }
     }
