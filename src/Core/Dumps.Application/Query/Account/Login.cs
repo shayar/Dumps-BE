@@ -14,12 +14,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Dumps.Application.Query;
 
+public class LoginQuery : LoginRequest, IRequest<LoginResponse>
+{
+}
 public class Login
 {
-    public class LoginQuery: LoginRequest, IRequest<LoginResponse>
-    {
-
-    }
 
     public class LoginQueryValidator : AbstractValidator<LoginQuery>
     {
