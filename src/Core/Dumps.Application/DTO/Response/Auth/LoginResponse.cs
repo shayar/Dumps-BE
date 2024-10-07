@@ -11,12 +11,15 @@ public class LoginResponse
 
     public string Email { get; set; }
 
-    public LoginResponse(ApplicationUser user)
+    public string Token { get; set; }
+
+    public LoginResponse(ApplicationUser user, string token)
     {
         Id = user.Id;
         FirstName = user.FirstName;
         LastName = user.LastName;
         Username = user.UserName;
         Email = user.Email;
+        Token = token;
     }
 }
