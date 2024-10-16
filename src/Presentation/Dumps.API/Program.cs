@@ -1,13 +1,10 @@
 ﻿using Dumps.API.Middleware;
-using Dumps.Application.Command;
 using Dumps.Application.Extensions;
 using Dumps.Domain.Entities;
 using Dumps.Infrastructure.Extensions;
 using Dumps.Persistence.DbContext;
 using Dumps.Persistence.Extensions;
 using Dumps.Persistence.SeedData;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -31,7 +28,7 @@ builder.Services.AddControllers(options =>
     options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 });
 
-builder.Services.AddApplication();
+builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPersistence(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -110,6 +107,7 @@ app.UseHttpsRedirection();
 //Cors Policy
 app.UseCors("CorsPolicy");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
