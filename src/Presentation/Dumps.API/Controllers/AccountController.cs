@@ -1,4 +1,5 @@
-﻿using Dumps.Application.Command.RegisterUser;
+﻿using Dumps.Application.APIResponse;
+using Dumps.Application.Command.RegisterUser;
 using Dumps.Application.DTO.Response.Auth;
 using Dumps.Application.Query;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace Dumps.API.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<ActionResult<LoginResponse>> LoginAsync([FromBody] LoginQuery query)
+        public async Task<ActionResult<APIResponse<LoginResponse>>> LoginAsync([FromBody] LoginQuery query)
         {
             return await Mediator.Send(query);
         }
