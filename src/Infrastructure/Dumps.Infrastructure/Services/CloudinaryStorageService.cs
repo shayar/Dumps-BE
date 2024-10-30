@@ -35,5 +35,26 @@ namespace Dumps.Infrastructure.Services
                 throw new Exception("File upload failed.");
             }
         }
+
+        public async Task DeleteFileAsync(string fileUrl)
+        {
+            var publicId = GetPublicIdFromUrl(fileUrl);
+            var deletionParams = new DeletionParams(publicId);
+
+            var result = await _cloudinary.DestroyAsync(deletionParams);
+
+            if (result.Result != "ok")
+            {
+                throw new Exception("Failed to delete file from Cloudinary.");
+            }
+        }
+
+        private string GetPublicIdFromUrl(string fileUrl)
+        {
+            var uri = new Uri(fileUrl);
+            var path = uri.AbsolutePath;
+            var publicId = Path.GetFileNameWithoutExtension(path);
+            return publicId;
+        }
     }
 }
