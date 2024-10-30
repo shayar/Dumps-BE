@@ -32,5 +32,18 @@ namespace Dumps.API.Controllers
         {
             return await Mediator.Send(request: new GetProductById.GetProductByIdQuery { Id = id });
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(Guid id)
+        {
+            var result = await Mediator.Send(new DeleteProductCommand { ProductId = id });
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
     }
 }
