@@ -5,10 +5,11 @@ This is the backend application for our Dumps Selling Site. The backend is built
 ## Table of Contents
 
 - [Getting Started](#getting-started)
+- [Run Locally](#run-locally)
+- [Run Using Docker](#run-using-docker)
 - [Project Structure](#project-structure)
 - [Branching Strategy](#branching-strategy)
 - [Development Workflow](#development-workflow)
-- [Running the Project](#running-the-project)
 - [Testing](#testing)
 - [Code Quality](#code-quality)
 - [Contributing](#contributing)
@@ -20,21 +21,40 @@ To get started with the project, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-repo/backend.git
-   cd backend
+   git clone git@github.com:shayar/Dumps-BE.git
+   cd Dumps-BE
    ```
+## Run Locally
 
-2. **Install dependencies:**
+2. **Install PostgreSQL**
+    - If you haven't already, install PostgreSQL on your machine. You can find installation instructions on the [PostgreSQL official website](https://www.postgresql.org/download/).
+
+3. **Add user in PostgreSQL**
+   ```bash
+    CREATE ROLE dumps_user WITH LOGIN PASSWORD 'dumps_pass' CREATEDB;
+    ```
+4. **Install dependencies:**
    ```bash
    dotnet restore
    ```
 
-3. **Run the development server:**
+5. **Run the development server:**
    ```bash
    dotnet run
    ```
 
-This will start the development server on `http://localhost:5000`.
+This will start the development server on `http://localhost:5072`.
+
+## Run Using Docker
+2. **Install Docker**
+    - If you haven't already, install Docker on your machine. You can find installation instructions on the [Docker official website](https://docs.docker.com/get-started/get-docker/).
+
+3. **Run docker**
+    ```bash
+   docker-compose up --build 
+   ```
+
+This will start the development server on `http://localhost:8080`.
 
 ## Project Structure
 
@@ -47,7 +67,7 @@ backend/
 │   ├── Core/                    # Domain layer: Entities, Interfaces, Specifications
 │   ├── Application/             # Application layer: Use Cases, DTOs, Services
 │   ├── Infrastructure/          # Infrastructure layer: Data access, External services
-│   ├── Web/                     # Presentation layer: Controllers, View Models, API
+│   ├── Presentation/                     # Presentation layer: Controllers, View Models, API
 │   └── Tests/                   # Test projects for each layer
 │
 ├── .env                         # Environment variables
@@ -61,7 +81,7 @@ backend/
 - **Core**: The domain layer containing business entities, interfaces, and domain logic.
 - **Application**: The application layer implementing use cases, DTOs, and application services.
 - **Infrastructure**: The infrastructure layer handling data persistence, external APIs, and other I/O concerns.
-- **Web**: The presentation layer, mainly the API controllers, handling HTTP requests and responses.
+- **Presentation**: The presentation layer, mainly the API controllers, handling HTTP requests and responses.
 
 ## Branching Strategy
 
