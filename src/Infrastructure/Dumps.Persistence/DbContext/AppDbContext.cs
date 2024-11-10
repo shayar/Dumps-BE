@@ -25,13 +25,6 @@ namespace Dumps.Persistence.DbContext
                 .WithOne(pv => pv.Product)
                 .HasForeignKey(pv => pv.ProductId)
                 .OnDelete(DeleteBehavior.Cascade); // Cascade on delete
-
-            // One-to-one relationship between Product and its current version
-            modelBuilder.Entity<Products>()
-                .HasOne(p => p.CurrentVersion)
-                .WithMany()  // No reverse navigation property here
-                .HasForeignKey(p => p.CurrentVersionId)
-                .OnDelete(DeleteBehavior.Restrict); // Restrict deletion of current version
         }
     }
 }

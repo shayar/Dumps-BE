@@ -7,6 +7,7 @@ namespace Dumps.Application.DTO.Request.Products
         public string Title { get; set; }
         public string Description { get; set; }
         public long Price { get; set; }
+        public string CodeTitle { get; set; }
         public int Discount { get; set; } = 0;
         public IFormFile PdfFile { get; set; }  // PDF File for upload
     }

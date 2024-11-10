@@ -10,11 +10,7 @@ namespace Dumps.Domain.Entities
         public long Price { get; set; }
         public int Discount { get; set; } = 0;
 
-        public Guid CurrentVersionId { get; set; }
-
-        // Foreign key relationship to ProductVersion for the current version
-        [ForeignKey("CurrentVersionId")]
-        public virtual ProductVersion CurrentVersion { get; set; }
+        public Guid? CurrentVersionId { get; set; }
 
         // One-to-many relationship with ProductVersions
         [InverseProperty("Product")]
