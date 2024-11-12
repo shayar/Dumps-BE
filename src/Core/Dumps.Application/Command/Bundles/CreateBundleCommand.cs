@@ -3,6 +3,7 @@ using System.Reflection.Metadata;
 using Dumps.Application.DTO.Request.Bundles;
 using Dumps.Application.DTO.Response.Bundles;
 using Dumps.Application.Exceptions;
+using Dumps.Domain.Common.Constants;
 using Dumps.Domain.Entities;
 using Dumps.Persistence.DbContext;
 using MediatR;
@@ -48,7 +49,7 @@ namespace Dumps.Application.Command.Bundles
                     Description = request.Description,
                     DiscountedPrice = request.DiscountedPrice,
                     CreatedAt = DateTime.UtcNow,
-                    CreatedBy = "Admin"
+                    CreatedBy = SD.Role_Admin
                 };
 
                 _context.Bundles.Add(bundle);
