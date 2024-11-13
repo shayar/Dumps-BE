@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Reflection.Metadata;
+using Dumps.Application.APIResponse;
 using Dumps.Application.DTO.Request.Bundles;
 using Dumps.Application.DTO.Response.Bundles;
 using Dumps.Application.Exceptions;
@@ -12,11 +13,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Dumps.Application.Command.Bundles
 {
-    public class CreateBundleCommand : CreateBundleRequest, IRequest<CreateBundleResponse>
+    public class CreateBundleCommand : CreateBundleRequest, IRequest<APIResponse<CreateBundleResponse>>
     {
     }
 
-    public class CreateBundleCommandHandler : IRequestHandler<CreateBundleCommand, CreateBundleResponse>
+    public class CreateBundleCommandHandler : IRequestHandler<CreateBundleCommand, APIResponse<CreateBundleResponse>>
     {
         private readonly AppDbContext _context;
         private readonly ILogger<CreateBundleCommandHandler> _logger;
@@ -27,7 +28,7 @@ namespace Dumps.Application.Command.Bundles
             _logger = logger;
         }
 
-        public async Task<CreateBundleResponse> Handle(CreateBundleCommand request, CancellationToken cancellationToken)
+        public async Task<APIResponse<CreateBundleResponse>> Handle(CreateBundleCommand request, CancellationToken cancellationToken)
         {
             using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
             try
@@ -80,7 +81,7 @@ namespace Dumps.Application.Command.Bundles
                 };
 
                 _logger.LogInformation("Bundle created successfully with ID: {BundleId}", bundle.Id);
-                return response;
+                return new APIResponse<CreateBundleResponse>(response, "Bundle created successfully.");
             }
             catch (Exception ex)
             {
