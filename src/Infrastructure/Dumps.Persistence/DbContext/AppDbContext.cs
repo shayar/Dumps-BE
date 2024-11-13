@@ -12,6 +12,8 @@ namespace Dumps.Persistence.DbContext
         public DbSet<ApplicationRole> ApplicationRoles { get; set; }
         public DbSet<Products> Products { get; set; }
         public DbSet<ProductVersion> ProductVersions { get; set; }
+        public DbSet<Bundle> Bundles { get; set; }
+        public DbSet<BundlesProducts> BundlesProducts { get; set; }
 
         public DbSet<ContactUs> ContactUsMessages { get; set; }
 
@@ -25,6 +27,21 @@ namespace Dumps.Persistence.DbContext
                 .WithOne(pv => pv.Product)
                 .HasForeignKey(pv => pv.ProductId)
                 .OnDelete(DeleteBehavior.Cascade); // Cascade on delete
+
+            // Define composite primary key for BundlesProducts
+            modelBuilder.Entity<BundlesProducts>()
+                .HasKey(bp => new { bp.BundleId, bp.ProductId });
+
+            // Many-to-many relationship between Bundles and Products
+            modelBuilder.Entity<BundlesProducts>()
+                .HasOne(bp => bp.Bundle)
+                .WithMany(b => b.BundlesProducts)
+                .HasForeignKey(bp => bp.BundleId);
+
+            modelBuilder.Entity<BundlesProducts>()
+                .HasOne(bp => bp.Product)
+                .WithMany(p => p.BundlesProducts)
+                .HasForeignKey(bp => bp.ProductId);
         }
     }
 }

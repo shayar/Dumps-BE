@@ -15,5 +15,7 @@ namespace Dumps.Domain.Entities
         // One-to-many relationship with ProductVersions
         [InverseProperty("Product")]
         public virtual ICollection<ProductVersion> ProductVersions { get; set; }
+
+        public virtual ICollection<BundlesProducts> BundlesProducts { get; set; }
     }
 }
