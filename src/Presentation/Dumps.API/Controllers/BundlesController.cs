@@ -54,5 +54,25 @@ namespace Dumps.API.Controllers
             var result = await Mediator.Send(new GetBundleById.GetBundleByIdQuery { Id = id });
             return Ok(result);
         }
+
+        /// <summary>
+        /// Update an existing bundle (Admin only)
+        /// </summary>
+        /// <param name="id">The bundle Id</param>
+        /// <param name="request">The bundle update request</param>
+        /// <returns>APIResponse containing the updated bundle's ID</returns>
+        [HttpPatch("{id}")]
+        [Authorize(Roles = SD.Role_Admin)]
+        [ProducesResponseType(typeof(APIResponse<Guid>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> UpdateBundle(Guid id, [FromBody] UpdateBundleCommand command)
+        {
+            command.UpdatedBy = User.Identity?.Name ?? SD.Role_Admin;
+
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
     }
 }
