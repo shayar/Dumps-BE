@@ -11,7 +11,7 @@ namespace Dumps.Domain.Entities
         [InverseProperty("ProductVersions")]
         public virtual Products Product { get; set; }
 
-        public long VersionNumber { get; set; }
+        public float VersionNumber { get; set; }
         public string PdfUrl { get; set; }
     }
 }

@@ -12,6 +12,8 @@ namespace Dumps.Persistence.DbContext
         public DbSet<ApplicationRole> ApplicationRoles { get; set; }
         public DbSet<Products> Products { get; set; }
         public DbSet<ProductVersion> ProductVersions { get; set; }
+        public DbSet<Bundle> Bundles { get; set; }
+        public DbSet<BundlesProducts> BundlesProducts { get; set; }
 
         public DbSet<ContactUs> ContactUsMessages { get; set; }
 
@@ -26,12 +28,20 @@ namespace Dumps.Persistence.DbContext
                 .HasForeignKey(pv => pv.ProductId)
                 .OnDelete(DeleteBehavior.Cascade); // Cascade on delete
 
-            // One-to-one relationship between Product and its current version
-            modelBuilder.Entity<Products>()
-                .HasOne(p => p.CurrentVersion)
-                .WithMany()  // No reverse navigation property here
-                .HasForeignKey(p => p.CurrentVersionId)
-                .OnDelete(DeleteBehavior.Restrict); // Restrict deletion of current version
+            // Define composite primary key for BundlesProducts
+            modelBuilder.Entity<BundlesProducts>()
+                .HasKey(bp => new { bp.BundleId, bp.ProductId });
+
+            // Many-to-many relationship between Bundles and Products
+            modelBuilder.Entity<BundlesProducts>()
+                .HasOne(bp => bp.Bundle)
+                .WithMany(b => b.BundlesProducts)
+                .HasForeignKey(bp => bp.BundleId);
+
+            modelBuilder.Entity<BundlesProducts>()
+                .HasOne(bp => bp.Product)
+                .WithMany(p => p.BundlesProducts)
+                .HasForeignKey(bp => bp.ProductId);
         }
     }
 }

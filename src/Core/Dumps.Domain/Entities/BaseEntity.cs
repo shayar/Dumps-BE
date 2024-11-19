@@ -17,11 +17,11 @@ namespace Dumps.Domain.Entities
         [Required]
         public bool IsDeleted { get; set; } = false;
 
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
 
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
-        public string DeletedBy { get; set; }
+        public string? DeletedBy { get; set; }
 
         public void MarkAsDeleted(string deletedBy)
         {

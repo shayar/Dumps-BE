@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Net;
 using Dumps.Application.APIResponse;
 using Dumps.Application.DTO.Response.Products;
@@ -43,6 +43,19 @@ public class GetProductById
                     throw new RestException(HttpStatusCode.NotFound, "Product not found");
                 }
 
+                var currentVersion = product.CurrentVersionId.HasValue
+               ? await _dbContext.ProductVersions
+                   .Where(pv => pv.Id == product.CurrentVersionId.Value)
+                   .Select(pv => new ProductVersionResponse
+                   {
+                       Id = pv.Id,
+                       VersionNumber = pv.VersionNumber,
+                       PdfUrl = pv.PdfUrl
+                   })
+                   .FirstOrDefaultAsync(cancellationToken)
+                   .ConfigureAwait(false)
+               : null;
+
                 return new APIResponse<ProductResponse>(new ProductResponse
                 {
                     Id = product.Id,
@@ -51,6 +64,7 @@ public class GetProductById
                     Discount = product.Discount,
                     Title = product.Title,
                     CodeTitle = product.CodeTitle,
+                    CurrentVersion = currentVersion
                 }, "Product retrieved successfully.");
             }
             catch (Exception e)

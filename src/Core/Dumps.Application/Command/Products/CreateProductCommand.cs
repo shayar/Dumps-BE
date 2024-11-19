@@ -40,29 +40,35 @@ namespace Dumps.Application.Command.Products
                         throw new RestException(HttpStatusCode.BadRequest, "Invalid or missing PDF file.");
                     }
 
-                    // Upload the file using a third-party storage service
-                    var pdfUrl = await _storageService.UploadFileAsync(request.PdfFile);
-
-                    // Create the new product entity
+                    // Step 1: Create and save the product (with a temporary CurrentVersionId)
                     var product = new Dumps.Domain.Entities.Products
                     {
                         Title = request.Title,
                         Description = request.Description,
                         Price = request.Price,
                         Discount = request.Discount,
-                        CurrentVersion = new ProductVersion
-                        {
-                            VersionNumber = 1,
-                            PdfUrl = pdfUrl
-                        },
-                        ProductVersions = new List<ProductVersion>()
+                        CodeTitle = request.CodeTitle,
+                        CurrentVersionId = Guid.Empty // Temporarily set to Guid.Empty
                     };
 
-                    product.ProductVersions.Add(product.CurrentVersion);
-
-                    // Save the product to the database
                     _context.Products.Add(product);
-                    await _context.SaveChangesAsync(cancellationToken);
+                    await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+                    // Step 2: Create the ProductVersion and associate it with the product
+                    var productVersion = new ProductVersion
+                    {
+                        ProductId = product.Id, // Set the ProductId to the newly created product's Id
+                        VersionNumber = 1.0f, // Set an appropriate version number
+                        PdfUrl = await _storageService.UploadFileAsync(request.PdfFile).ConfigureAwait(false)
+                    };
+
+                    _context.ProductVersions.Add(productVersion);
+                    await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+                    // Step 3: Update the product with the correct CurrentVersionId
+                    product.CurrentVersionId = productVersion.Id;
+                    _context.Products.Update(product);
+                    await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
                     // Commit the transaction if everything succeeds
                     await transaction.CommitAsync(cancellationToken);

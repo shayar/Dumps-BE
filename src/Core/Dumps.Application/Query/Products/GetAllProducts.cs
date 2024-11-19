@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Net;
 using Dumps.Application.APIResponse;
 using Dumps.Application.DTO.Response.Products;
@@ -37,6 +37,17 @@ public class GetAllProducts
                         Discount = res.Discount,
                         Title = res.Title,
                         CodeTitle = res.CodeTitle,
+                        CurrentVersion = res.CurrentVersionId.HasValue
+                        ? dbContext.ProductVersions
+                            .Where(pv => pv.Id == res.CurrentVersionId.Value)
+                            .Select(pv => new ProductVersionResponse
+                            {
+                                Id = pv.Id,
+                                VersionNumber = pv.VersionNumber,
+                                PdfUrl = pv.PdfUrl
+                            })
+                            .FirstOrDefault()
+                        : null
                     })
                     .ToListAsync(cancellationToken)
                     .ConfigureAwait(false);
