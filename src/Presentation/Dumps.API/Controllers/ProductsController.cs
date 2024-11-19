@@ -45,5 +45,14 @@ namespace Dumps.API.Controllers
 
             return BadRequest(result);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateProduct(Guid id, [FromForm] UpdateProductCommand   command)
+        {
+            var result = await Mediator.Send(new UpdateProductCommand { ProductId = id});
+
+            return Ok(result);
+        }
+
     }
 }
