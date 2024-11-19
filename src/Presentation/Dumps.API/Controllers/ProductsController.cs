@@ -1,5 +1,4 @@
-﻿using Dumps.Application.APIResponse;
-using Dumps.Application.Command.Products;
+﻿using Dumps.Application.Command.Products;
 using Dumps.Application.DTO.Response.Products;
 using Dumps.Application.Query.Products;
 using Microsoft.AspNetCore.Mvc;

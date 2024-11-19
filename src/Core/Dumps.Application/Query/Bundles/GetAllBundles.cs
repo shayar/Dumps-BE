@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using System.Net;
-using Dumps.Application.APIResponse;
 using Dumps.Application.DTO.Response.Bundles;
 using Dumps.Application.DTO.Response.Products;
 using Dumps.Application.Exceptions;
@@ -30,7 +29,8 @@ namespace Dumps.Application.Query.Bundles
             }
         }
 
-        public class GetAllBundlesQueryHandler : IRequestHandler<GetAllBundlesQuery, APIResponse<IList<CreateBundleResponse>>>
+        public class
+            GetAllBundlesQueryHandler : IRequestHandler<GetAllBundlesQuery, APIResponse<IList<CreateBundleResponse>>>
         {
             private readonly AppDbContext _dbContext;
             private readonly ILogger<GetAllBundlesQueryHandler> _logger;
@@ -41,7 +41,8 @@ namespace Dumps.Application.Query.Bundles
                 _logger = logger;
             }
 
-            public async Task<APIResponse<IList<CreateBundleResponse>>> Handle(GetAllBundlesQuery request, CancellationToken cancellationToken)
+            public async Task<APIResponse<IList<CreateBundleResponse>>> Handle(GetAllBundlesQuery request,
+                CancellationToken cancellationToken)
             {
                 try
                 {
@@ -58,13 +59,19 @@ namespace Dumps.Application.Query.Bundles
                     // Apply sorting
                     query = request.Sort?.ToLower() switch
                     {
-                        "price_asc" => query.OrderBy(x => x.BundlesProducts.Sum(bp => bp.Product.Price) - x.DiscountedPrice),
-                        "price_desc" => query.OrderByDescending(x => x.BundlesProducts.Sum(bp => bp.Product.Price) - x.DiscountedPrice),
+                        "price_asc" => query.OrderBy(x =>
+                            x.BundlesProducts.Sum(bp => bp.Product.Price) - x.DiscountedPrice),
+                        "price_desc" => query.OrderByDescending(x =>
+                            x.BundlesProducts.Sum(bp => bp.Product.Price) - x.DiscountedPrice),
                         "recent" => query.OrderByDescending(x => x.CreatedAt),
                         _ => query.OrderByDescending(x => x.CreatedAt) // default sorting
                     };
 
+                    var totalItems = await query.CountAsync(cancellationToken);
+
                     var bundlesList = await query
+                        .Skip((request.Page - 1) * request.Limit)
+                        .Take(request.Limit)
                         .Include(b => b.BundlesProducts)
                         .ThenInclude(bp => bp.Product)
                         .Select(b => new CreateBundleResponse
@@ -88,7 +95,8 @@ namespace Dumps.Application.Query.Bundles
                         .ToListAsync(cancellationToken)
                         .ConfigureAwait(false);
 
-                    return new APIResponse<IList<CreateBundleResponse>>(bundlesList, "Bundles retrieved successfully.");
+                    return new APIResponse<IList<CreateBundleResponse>>(bundlesList, "Bundles retrieved successfully.",
+                        request.Page, request.Limit, totalItems);
                 }
                 catch (Exception ex)
                 {
