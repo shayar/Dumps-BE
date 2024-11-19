@@ -62,14 +62,15 @@ namespace Dumps.Application.Command.Products
                         float currentVersionNumber = latestVersion?.VersionNumber ?? 1.0f;
 
                         // Calculate the next version number
+                        // Here the version number goes from 1.0, 1.1...1.9 and 2.0 ..2.9 like this
                         float newVersionNumber;
                         if (Math.Abs((currentVersionNumber % 1) - 0.9f) < 0.0001f)
                         {
-                            newVersionNumber = (float)Math.Floor(currentVersionNumber) + 1; // Increment major version
+                            newVersionNumber = (float)Math.Floor(currentVersionNumber) + 1; // Increment for version before decimal
                         }
                         else
                         {
-                            newVersionNumber = currentVersionNumber + 0.1f; // Increment minor version
+                            newVersionNumber = currentVersionNumber + 0.1f; // Increment for version after decimal
                         }
                         // Upload new PDF and create a new product version
                         var newPdfUrl = await _storageService.UploadFileAsync(request.PdfFile).ConfigureAwait(false);
