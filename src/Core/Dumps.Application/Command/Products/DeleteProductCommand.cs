@@ -31,7 +31,6 @@ namespace Dumps.Application.Command.Products
         {
             // Retrieve the product from the database
             var product = await _context.Products
-                .Include(p => p.CurrentVersion)  // Assuming `CurrentVersion` has the file URL
                 .FirstOrDefaultAsync(p => p.Id == request.ProductId, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -40,12 +39,16 @@ namespace Dumps.Application.Command.Products
                 throw new RestException(HttpStatusCode.BadRequest, "Product not found.");
             }
 
+            var currentVersion = await _context.ProductVersions
+       .FirstOrDefaultAsync(pv => pv.Id == product.CurrentVersionId, cancellationToken)
+       .ConfigureAwait(false);
+
             // Attempt to delete the associated file in Cloudinary
-            if (product.CurrentVersion != null && !string.IsNullOrEmpty(product.CurrentVersion.PdfUrl))
+            if (currentVersion != null && !string.IsNullOrEmpty(currentVersion.PdfUrl))
             {
                 try
                 {
-                    await _storageService.DeleteFileAsync(product.CurrentVersion.PdfUrl).ConfigureAwait(false);
+                    await _storageService.DeleteFileAsync(currentVersion.PdfUrl).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {

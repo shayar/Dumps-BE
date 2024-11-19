@@ -31,6 +31,10 @@ namespace Dumps.Infrastructure.Services
                 {
                     return result.SecureUrl.AbsoluteUri;  // Return the URL of the uploaded file
                 }
+                else
+                {
+                    throw new Exception($"Cloudinary upload failed with status: {result.StatusCode}");
+                }
 
                 throw new Exception("File upload failed.");
             }

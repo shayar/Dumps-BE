@@ -3,6 +3,7 @@ using System;
 using Dumps.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Dumps.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241110032502_FixCurrentVersionNavigation")]
+    partial class FixCurrentVersionNavigation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,64 +167,6 @@ namespace Dumps.Persistence.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("Dumps.Domain.Entities.Bundle", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("DiscountedPrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Bundles");
-                });
-
-            modelBuilder.Entity("Dumps.Domain.Entities.BundlesProducts", b =>
-                {
-                    b.Property<Guid>("BundleId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("BundleId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("BundlesProducts");
                 });
 
             modelBuilder.Entity("Dumps.Domain.Entities.ContactUs", b =>
@@ -455,25 +400,6 @@ namespace Dumps.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Dumps.Domain.Entities.BundlesProducts", b =>
-                {
-                    b.HasOne("Dumps.Domain.Entities.Bundle", "Bundle")
-                        .WithMany("BundlesProducts")
-                        .HasForeignKey("BundleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Dumps.Domain.Entities.Products", "Product")
-                        .WithMany("BundlesProducts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Bundle");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("Dumps.Domain.Entities.ProductVersion", b =>
                 {
                     b.HasOne("Dumps.Domain.Entities.Products", "Product")
@@ -536,15 +462,8 @@ namespace Dumps.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Dumps.Domain.Entities.Bundle", b =>
-                {
-                    b.Navigation("BundlesProducts");
-                });
-
             modelBuilder.Entity("Dumps.Domain.Entities.Products", b =>
                 {
-                    b.Navigation("BundlesProducts");
-
                     b.Navigation("ProductVersions");
                 });
 #pragma warning restore 612, 618

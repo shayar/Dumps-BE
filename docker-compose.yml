@@ -11,6 +11,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Database=dumps_db;Username=postgres;Password=dumps_pass
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       - postgres
 
@@ -27,3 +29,4 @@ services:
 
 volumes:
   postgres_data:
+  logs:
