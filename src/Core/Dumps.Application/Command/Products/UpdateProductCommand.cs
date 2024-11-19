@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Reflection.Metadata;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Dumps.Application.APIResponse;
 using Dumps.Application.DTO.Request.Products;
 using Dumps.Application.Exceptions;
@@ -15,7 +8,6 @@ using Dumps.Persistence.DbContext;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dumps.Application.Command.Products
 {
