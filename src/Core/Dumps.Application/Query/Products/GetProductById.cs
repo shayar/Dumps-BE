@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using System.Net;
-using Dumps.Application.APIResponse;
 using Dumps.Application.DTO.Response.Products;
 using Dumps.Application.Exceptions;
 using Dumps.Persistence.DbContext;

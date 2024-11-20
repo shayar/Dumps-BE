@@ -1,5 +1,4 @@
-﻿using Dumps.Application.APIResponse;
-using Dumps.Application.Command.RegisterUser;
+﻿using Dumps.Application.Command.RegisterUser;
 using Dumps.Application.DTO.Response.Auth;
 using Dumps.Application.Query;
 using Microsoft.AspNetCore.Mvc;

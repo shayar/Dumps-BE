@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq.Expressions;
 using System.Net;
-using Dumps.Application.APIResponse;
 using Dumps.Application.DTO.Response.Products;
 using Dumps.Application.Exceptions;
 using Dumps.Persistence.DbContext;
@@ -54,7 +53,11 @@ public class GetAllProducts
                     _ => query.OrderByDescending(x => x.CreatedAt) // default sorting
                 };
 
+                var totalItems = await query.CountAsync(cancellationToken);
+
                 var productsList = await query
+                    .Skip((request.Page - 1) * request.Limit)
+                    .Take(request.Limit)
                     .Select(res => new ProductResponse
                     {
                         Id = res.Id,
@@ -77,7 +80,13 @@ public class GetAllProducts
                     })
                     .ToListAsync(cancellationToken).ConfigureAwait(false);
 
-                return new APIResponse<IList<ProductResponse>>(productsList, "Products retrieved successfully.");
+                return new APIResponse<IList<ProductResponse>>(
+                    productsList,
+                    "Products retrieved successfully.",
+                    request.Page,
+                    request.Limit,
+                    totalItems
+                );
             }
             catch (Exception e)
             {
