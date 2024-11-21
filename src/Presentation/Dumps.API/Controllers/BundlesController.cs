@@ -36,7 +36,7 @@ namespace Dumps.API.Controllers
         public async Task<IActionResult> GetAllBundles([FromQuery] string? sort,
             [FromQuery] int page = 1, [FromQuery] int pageSize  = 10, [FromQuery] string? search = null)
         {
-            var result = await Mediator.Send(new GetAllBundles.GetAllBundlesQuery());
+            var result = await Mediator.Send(new GetAllBundles.GetAllBundlesQuery(sort, page, pageSize, search));
             return Ok(result);
         }
 
@@ -62,7 +62,7 @@ namespace Dumps.API.Controllers
         /// <param name="request">The bundle update request</param>
         /// <returns>APIResponse containing the updated bundle's ID</returns>
         [HttpPatch("{id}")]
-        [Authorize(Roles = SD.Role_Admin)]
+        // [Authorize(Roles = SD.Role_Admin)]
         [ProducesResponseType(typeof(APIResponse<Guid>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.NotFound)]
