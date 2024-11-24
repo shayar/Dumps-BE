@@ -13,5 +13,6 @@ namespace Dumps.Domain.Entities
 
         public float VersionNumber { get; set; }
         public string PdfUrl { get; set; }
+        public string FileName { get; set; }
     }
 }

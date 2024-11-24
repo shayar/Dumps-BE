@@ -49,7 +49,8 @@ public class GetProductById
                    {
                        Id = pv.Id,
                        VersionNumber = pv.VersionNumber,
-                       PdfUrl = pv.PdfUrl
+                       PdfUrl = pv.PdfUrl,
+                       FileName = pv.FileName
                    })
                    .FirstOrDefaultAsync(cancellationToken)
                    .ConfigureAwait(false)

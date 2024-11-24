@@ -77,7 +77,8 @@ namespace Dumps.Application.Command.Products
                         {
                             ProductId = product.Id,
                             VersionNumber = newVersionNumber,
-                            PdfUrl = newPdfUrl
+                            PdfUrl = newPdfUrl,
+                            FileName = request.PdfFile.FileName
                         };
 
                         _context.ProductVersions.Add(newProductVersion);
