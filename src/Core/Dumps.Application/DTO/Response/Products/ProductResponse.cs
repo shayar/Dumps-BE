@@ -17,5 +17,6 @@ public class ProductVersionResponse
     public Guid Id { get; set; }
     public float VersionNumber { get; set; }
     public string PdfUrl { get; set; }
+    public string FileName { get; set; }
 }
 

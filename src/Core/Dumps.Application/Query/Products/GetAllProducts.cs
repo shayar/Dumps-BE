@@ -73,7 +73,8 @@ public class GetAllProducts
                                 {
                                     Id = pv.Id,
                                     VersionNumber = pv.VersionNumber,
-                                    PdfUrl = pv.PdfUrl
+                                    PdfUrl = pv.PdfUrl,
+                                    FileName = pv.FileName
                                 })
                                 .FirstOrDefault()
                             : null
