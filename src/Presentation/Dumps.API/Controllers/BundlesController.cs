@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Dumps.Application.Command.Bundles;
+using Dumps.Application.Command.Products;
 using Dumps.Application.DTO.Request.Bundles;
 using Dumps.Application.DTO.Response.Bundles;
 using Dumps.Application.Query.Bundles;
@@ -73,6 +74,19 @@ namespace Dumps.API.Controllers
 
             var result = await Mediator.Send(command);
             return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBundle(Guid id)
+        {
+            var result = await Mediator.Send(new DeleteBundleCommand { Id = id });
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
         }
     }
 }
