@@ -17,7 +17,7 @@ namespace Dumps.API.Controllers
         /// <param name="command">The bundle creation command</param>
         /// <returns>APIResponse containing the created bundle's ID</returns>
         [HttpPost]
-        // [Authorize(Roles = SD.Role_Admin)]
+        [Authorize(Roles = SD.Role_Admin)]
         [ProducesResponseType(typeof(APIResponse<CreateBundleResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<CreateBundleResponse>> CreateBundle([FromForm] CreateBundleCommand command)
@@ -33,6 +33,7 @@ namespace Dumps.API.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(APIResponse<IList<CreateBundleResponse>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.InternalServerError)]
+        [Authorize]
         public async Task<IActionResult> GetAllBundles([FromQuery] string? sort,
             [FromQuery] int page = 1, [FromQuery] int pageSize  = 10, [FromQuery] string? search = null)
         {
