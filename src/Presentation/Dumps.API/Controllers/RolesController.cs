@@ -12,11 +12,13 @@ namespace Dumps.API.Controllers
         /// <returns>APIResponse indicating whether the user is an Admin.</returns>
         [HttpGet("is-admin")]
         [Authorize]
-        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(APIResponse<bool>), 200)]
         public IActionResult Index()
         {
             var isAdmin = User.IsInRole(SD.Role_Admin);
-            return Ok(new { IsAdmin = isAdmin });
+            var message = isAdmin ? "User is an admin." : "User is not an admin.";
+
+            return Ok(new APIResponse<bool>(isAdmin, message));
         }
     }
 }
