@@ -13,7 +13,7 @@ namespace Dumps.API.Controllers
         [HttpGet("is-admin")]
         [Authorize]
         [ProducesResponseType(typeof(APIResponse<bool>), 200)]
-        public IActionResult Index()
+        public IActionResult IsAdmin()
         {
             var isAdmin = User.IsInRole(SD.Role_Admin);
             var message = isAdmin ? "User is an admin." : "User is not an admin.";
