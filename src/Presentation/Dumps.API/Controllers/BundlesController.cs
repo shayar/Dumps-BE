@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using Dumps.Application.Command.Bundles;
-using Dumps.Application.Command.Products;
 using Dumps.Application.DTO.Request.Bundles;
 using Dumps.Application.DTO.Response.Bundles;
 using Dumps.Application.Query.Bundles;
