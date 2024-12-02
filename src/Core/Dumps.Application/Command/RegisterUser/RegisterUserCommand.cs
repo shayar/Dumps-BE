@@ -1,5 +1,5 @@
 ﻿using Dumps.Application.DTO.Request.RegisterUser;
-using Dumps.Application.DTO.Response.Account;
+using Dumps.Domain.Common.Constants;
 using Dumps.Domain.Entities;
 using Dumps.Persistence.DbContext;
 using FluentValidation;
@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Dumps.Application.Command.RegisterUser
 {
-    public class RegisterUserCommand : RegisterUserRequest, IRequest<RegisterUserResponse>
+    public class RegisterUserCommand : RegisterUserRequest, IRequest<APIResponse<object>>
     {
         //  Validator for register user
         public class Validator : AbstractValidator<RegisterUserCommand>
@@ -27,7 +27,7 @@ namespace Dumps.Application.Command.RegisterUser
             }
         }
     }
-    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, RegisterUserResponse>
+    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, APIResponse<object>>
     {
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -41,7 +41,7 @@ namespace Dumps.Application.Command.RegisterUser
 
       
 
-        public async Task<RegisterUserResponse> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+        public async Task<APIResponse<object>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
 
 
@@ -51,12 +51,12 @@ namespace Dumps.Application.Command.RegisterUser
 
             if (!validationResult.IsValid)
             {
-                return new RegisterUserResponse
-                {
-                    Data = null,
-                    Message = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage)),
-                    Success = false
-                };
+                return new APIResponse<object>(
+                    null,
+                    string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage)),
+                    false
+                );
+
             }
 
             // Starting a  database transaction
@@ -79,45 +79,43 @@ namespace Dumps.Application.Command.RegisterUser
                     // If user creation fails, return the result with errors
                     if (!result.Succeeded)
                     {
-                        return new RegisterUserResponse
-                        {
-                            Data = null,
-                            Message = string.Join("; ", result.Errors.Select(e => e.Description)),
-                            Success = false
-                        };
+                        return new APIResponse<object>(
+                           null,
+                           string.Join("; ", result.Errors.Select(e => e.Description)),
+                           false
+                         );
+
                     }
 
                     //Adding role to the user
-                    var roleResult = await _userManager.AddToRoleAsync(user, "User");
-                    if (!roleResult.Succeeded)
-                    {
+                    var roleResult = await _userManager.AddToRoleAsync(user, SD.Role_User);
+                     if (!roleResult.Succeeded)
+                     {
                         await transaction.RollbackAsync();
-                        return new RegisterUserResponse
-                        {
-                            Data = null,
-                            Message = string.Join("; ", roleResult.Errors.Select(e => e.Description)),
-                            Success = false
-                        };
+                        return new APIResponse<object>(
+                          null,
+                          string.Join("; ", roleResult.Errors.Select(e => e.Description)),
+                          false
+                         );
                     }
 
                     // Commit the transaction if user creation succeeds
                     await transaction.CommitAsync(cancellationToken);
-                    return new RegisterUserResponse
-                    {
-                        Data = new
-                        {
-                            User = new
-                            {
-                                user.Id,
-                                user.UserName,
-                                user.FirstName,
-                                user.LastName,
-                                user.Email
-                            }
-                        },
-                        Message = "User registered successfully.",
-                        Success = true
-                    };
+                    return new APIResponse<object>(
+                          new
+                             {
+                              User = new
+                                     {
+                                      user.Id,
+                                      user.UserName,
+                                      user.FirstName,
+                                      user.LastName,
+                                      user.Email
+                                      }
+                              },
+                          "User registered successfully.",
+                          true
+                     );
 
                 }
                 catch (Exception ex)
@@ -129,12 +127,12 @@ namespace Dumps.Application.Command.RegisterUser
                     _logger.LogError(ex, "Error occurred while registering a new user.");
 
                     // Return a failed response with a general error message
-                    return new RegisterUserResponse
-                    {
-                        Data = null,
-                        Message = "An error occurred during user registration.",
-                        Success = false
-                    };
+                    return new APIResponse<object>(
+                      null,
+                      "An error occurred during user registration.",
+                       false
+                     );
+
                 }
             }
           
