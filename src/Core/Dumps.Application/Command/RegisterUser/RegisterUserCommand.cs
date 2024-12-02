@@ -1,4 +1,5 @@
 ﻿using Dumps.Application.DTO.Request.RegisterUser;
+using Dumps.Domain.Common.Constants;
 using Dumps.Domain.Entities;
 using Dumps.Persistence.DbContext;
 using FluentValidation;
@@ -81,7 +82,7 @@ namespace Dumps.Application.Command.RegisterUser
                     }
 
                      //Adding role to the user
-                     var roleResult = await _userManager.AddToRoleAsync(user, "User");
+                     var roleResult = await _userManager.AddToRoleAsync(user, SD.Role_User);
                      if (!roleResult.Succeeded)
                      {
                         await transaction.RollbackAsync();

@@ -17,7 +17,7 @@ namespace Dumps.API.Controllers
         /// <param name="command">The bundle creation command</param>
         /// <returns>APIResponse containing the created bundle's ID</returns>
         [HttpPost]
-        // [Authorize(Roles = SD.Role_Admin)]
+        [Authorize(Roles = SD.Role_Admin)]
         [ProducesResponseType(typeof(APIResponse<CreateBundleResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<CreateBundleResponse>> CreateBundle([FromForm] CreateBundleCommand command)
@@ -62,7 +62,7 @@ namespace Dumps.API.Controllers
         /// <param name="request">The bundle update request</param>
         /// <returns>APIResponse containing the updated bundle's ID</returns>
         [HttpPatch("{id}")]
-        // [Authorize(Roles = SD.Role_Admin)]
+        [Authorize(Roles = SD.Role_Admin)]
         [ProducesResponseType(typeof(APIResponse<Guid>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.NotFound)]
