@@ -12,12 +12,12 @@ namespace Dumps.API.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (result.Succeeded)
+            if (result.Success)
             {
-                return Ok("User registered successfully.");
+                return Ok(new {result.Message, result.Data});
             }
 
-            return BadRequest(result.Errors.Select(e => e.Description));
+            return BadRequest(result.Message);
         }
 
         [HttpPost("Login")]
