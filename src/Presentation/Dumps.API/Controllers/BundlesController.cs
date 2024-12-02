@@ -74,5 +74,18 @@ namespace Dumps.API.Controllers
             var result = await Mediator.Send(command);
             return Ok(result);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBundle(Guid id)
+        {
+            var result = await Mediator.Send(new DeleteBundleCommand { Id = id });
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
     }
 }
