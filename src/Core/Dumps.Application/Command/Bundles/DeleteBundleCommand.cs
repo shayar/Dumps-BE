@@ -45,11 +45,13 @@ namespace Dumps.Application.Command.Bundles
                 throw new RestException(HttpStatusCode.NotFound, "Bundle not found.");
             }
 
+            // Remove related BundlesProducts
+            _context.BundlesProducts.RemoveRange(bundle.BundlesProducts);
             // Delete the Bundle record from the database
             _context.Bundles.Remove(bundle);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return new APIResponse<object>(null, "Product deleted successfully.");
+            return new APIResponse<object>(null, "Bundle deleted successfully.");
         }
     }
 }
