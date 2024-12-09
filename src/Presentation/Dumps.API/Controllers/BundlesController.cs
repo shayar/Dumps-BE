@@ -76,9 +76,11 @@ namespace Dumps.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> DeleteBundle(Guid id)
         {
-            var result = await Mediator.Send(new DeleteBundleCommand { Id = id });
+            string deletedBy = User.Identity?.Name ?? SD.Role_Admin;
+            var result = await Mediator.Send(new DeleteBundleCommand { Id = id, DeletedBy = deletedBy });
 
             if (result.Success)
             {

@@ -19,6 +19,7 @@ namespace Dumps.Application.Command.Bundles
     public class DeleteBundleCommand : IRequest<APIResponse<object>>
     {
         public Guid Id { get; set; }
+        public String DeletedBy { get; set; }
     }
     public class DeleteBundleCommandHandler : IRequestHandler<DeleteBundleCommand, APIResponse<object>>
     {
@@ -35,23 +36,33 @@ namespace Dumps.Application.Command.Bundles
 
         public async Task<APIResponse<object>> Handle(DeleteBundleCommand request, CancellationToken cancellationToken)
         {
-            // Retrieve the existing bundle
-            var bundle = await _context.Bundles
-                .Include(b => b.BundlesProducts)
-                .FirstOrDefaultAsync(b => b.Id == request.Id, cancellationToken);
-
-            if (bundle == null)
+            try
             {
-                throw new RestException(HttpStatusCode.NotFound, "Bundle not found.");
+                // Retrieve the existing bundle
+                var bundle = await _context.Bundles
+                .Include(b => b.BundlesProducts)
+                .FirstOrDefaultAsync(b => b.Id == request.Id && !b.IsDeleted, cancellationToken);
+
+                if (bundle == null)
+                {
+                    throw new RestException(HttpStatusCode.NotFound, "Bundle not found.");
+                }
+
+                // Mark the bundle as deleted
+                bundle.IsDeleted = true;
+
+                bundle.MarkAsDeleted(request.DeletedBy);
+                _context.Bundles.Update(bundle);
+                await _context.SaveChangesAsync(cancellationToken);
+
+
+                return new APIResponse<object>(null, "Bundle deleted successfully.");
             }
-
-            // Remove related BundlesProducts
-            _context.BundlesProducts.RemoveRange(bundle.BundlesProducts);
-            // Delete the Bundle record from the database
-            _context.Bundles.Remove(bundle);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return new APIResponse<object>(null, "Bundle deleted successfully.");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting the bundle.");
+                throw new RestException(HttpStatusCode.InternalServerError, "An error occurred during bundle deletion.");
+            }
         }
     }
 }
