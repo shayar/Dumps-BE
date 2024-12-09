@@ -74,5 +74,20 @@ namespace Dumps.API.Controllers
             var result = await Mediator.Send(command);
             return Ok(result);
         }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = SD.Role_Admin)]
+        public async Task<IActionResult> DeleteBundle(Guid id)
+        {
+            string deletedBy = User.Identity?.Name ?? SD.Role_Admin;
+            var result = await Mediator.Send(new DeleteBundleCommand { Id = id, DeletedBy = deletedBy });
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
     }
 }
