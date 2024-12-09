@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Reflection.Metadata;
-using Dumps.Application.APIResponse;
 using Dumps.Application.DTO.Request.Bundles;
 using Dumps.Application.DTO.Response.Bundles;
+using Dumps.Application.DTO.Response.Products;
 using Dumps.Application.Exceptions;
 using Dumps.Domain.Common.Constants;
 using Dumps.Domain.Entities;
@@ -28,7 +28,8 @@ namespace Dumps.Application.Command.Bundles
             _logger = logger;
         }
 
-        public async Task<APIResponse<CreateBundleResponse>> Handle(CreateBundleCommand request, CancellationToken cancellationToken)
+        public async Task<APIResponse<CreateBundleResponse>> Handle(CreateBundleCommand request,
+            CancellationToken cancellationToken)
         {
             using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
             try
@@ -77,7 +78,17 @@ namespace Dumps.Application.Command.Bundles
                     Title = bundle.Title,
                     Description = bundle.Description,
                     DiscountedPrice = bundle.DiscountedPrice,
-                    ProductIds = request.ProductIds,
+                    TotalPrice = bundle.BundlesProducts.Sum(bp => bp.Product.Price),
+                    Products = bundle.BundlesProducts.Select(bp => new ProductResponse
+                    {
+                        Id = bp.Product.Id,
+                        Title = bp.Product.Title,
+                        Description = bp.Product.Description,
+                        Price = bp.Product.Price,
+                        Discount = bp.Product.Discount,
+                        CodeTitle = bp.Product.CodeTitle,
+                        CurrentVersion = null
+                    }).ToList()
                 };
 
                 _logger.LogInformation("Bundle created successfully with ID: {BundleId}", bundle.Id);
@@ -89,7 +100,8 @@ namespace Dumps.Application.Command.Bundles
 
                 _logger.LogError(ex, "Error occurred while creating a new bundle.");
 
-                throw new RestException(HttpStatusCode.InternalServerError, "An error occurred during bundle creation.");
+                throw new RestException(HttpStatusCode.InternalServerError,
+                    "An error occurred during bundle creation.");
             }
         }
     }

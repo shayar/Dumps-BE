@@ -1,6 +1,6 @@
 ﻿using System.Net;
-using Dumps.Application.APIResponse;
 using Dumps.Application.DTO.Response.Bundles;
+using Dumps.Application.DTO.Response.Products;
 using Dumps.Application.Exceptions;
 using Dumps.Persistence.DbContext;
 using MediatR;
@@ -50,7 +50,17 @@ namespace Dumps.Application.Query.Bundles
                         Title = bundle.Title,
                         Description = bundle.Description,
                         DiscountedPrice = bundle.DiscountedPrice,
-                        ProductIds = bundle.BundlesProducts.Select(bp => bp.ProductId).ToList()
+                        TotalPrice = bundle.BundlesProducts.Sum(bp => bp.Product.Price),
+                        Products = bundle.BundlesProducts.Select(bp => new ProductResponse
+                        {
+                            Id = bp.Product.Id,
+                            Title = bp.Product.Title,
+                            Description = bp.Product.Description,
+                            Price = bp.Product.Price,
+                            Discount = bp.Product.Discount,
+                            CodeTitle = bp.Product.CodeTitle,
+                            CurrentVersion = null
+                        }).ToList()
                     };
 
                     return new APIResponse<CreateBundleResponse>(response, "Bundle retrieved successfully.");

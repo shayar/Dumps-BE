@@ -59,7 +59,8 @@ namespace Dumps.Application.Command.Products
                     {
                         ProductId = product.Id, // Set the ProductId to the newly created product's Id
                         VersionNumber = 1.0f, // Set an appropriate version number
-                        PdfUrl = await _storageService.UploadFileAsync(request.PdfFile).ConfigureAwait(false)
+                        PdfUrl = await _storageService.UploadFileAsync(request.PdfFile).ConfigureAwait(false),
+                        FileName = request.PdfFile.FileName
                     };
 
                     _context.ProductVersions.Add(productVersion);

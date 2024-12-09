@@ -1,5 +1,4 @@
-﻿using Dumps.Application.APIResponse;
-using Dumps.Application.Command.Products;
+﻿using Dumps.Application.Command.Products;
 using Dumps.Application.DTO.Response.Products;
 using Dumps.Application.Query.Products;
 using Microsoft.AspNetCore.Mvc;
@@ -22,9 +21,10 @@ namespace Dumps.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<APIResponse<IList<ProductResponse>>>> GetProducts()
+        public async Task<ActionResult<APIResponse<IList<ProductResponse>>>> GetProducts([FromQuery] string? sort,
+            [FromQuery] int page = 1, [FromQuery] int pageSize  = 10, [FromQuery] string? search = null)
         {
-            return await Mediator.Send(new GetAllProducts.GetAllProductsQuery());
+            return await Mediator.Send(new GetAllProducts.GetAllProductsQuery(sort, page, pageSize, search));
         }
 
         [HttpGet("{id}")]
@@ -47,12 +47,11 @@ namespace Dumps.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct(Guid id, [FromForm] UpdateProductCommand   command)
+        public async Task<IActionResult> UpdateProduct(Guid id, [FromForm] UpdateProductCommand command)
         {
-            var result = await Mediator.Send(new UpdateProductCommand { ProductId = id});
+            var result = await Mediator.Send(new UpdateProductCommand { ProductId = id });
 
             return Ok(result);
         }
-
     }
 }
