@@ -2,7 +2,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
-using Dumps.Application.APIResponse;
 using Dumps.Application.DTO.Request.Auth;
 using Dumps.Application.DTO.Response.Auth;
 using Dumps.Application.Exceptions;

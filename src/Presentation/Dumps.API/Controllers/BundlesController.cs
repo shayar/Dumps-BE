@@ -1,5 +1,4 @@
-﻿using Dumps.Application.APIResponse;
-using System.Net;
+﻿using System.Net;
 using Dumps.Application.Command.Bundles;
 using Dumps.Application.DTO.Request.Bundles;
 using Dumps.Application.DTO.Response.Bundles;
@@ -34,9 +33,10 @@ namespace Dumps.API.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(APIResponse<IList<CreateBundleResponse>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> GetAllBundles()
+        public async Task<IActionResult> GetAllBundles([FromQuery] string? sort,
+            [FromQuery] int page = 1, [FromQuery] int pageSize  = 10, [FromQuery] string? search = null)
         {
-            var result = await Mediator.Send(new GetAllBundles.GetAllBundlesQuery());
+            var result = await Mediator.Send(new GetAllBundles.GetAllBundlesQuery(sort, page, pageSize, search));
             return Ok(result);
         }
 
@@ -73,6 +73,21 @@ namespace Dumps.API.Controllers
 
             var result = await Mediator.Send(command);
             return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = SD.Role_Admin)]
+        public async Task<IActionResult> DeleteBundle(Guid id)
+        {
+            string deletedBy = User.Identity?.Name ?? SD.Role_Admin;
+            var result = await Mediator.Send(new DeleteBundleCommand { Id = id, DeletedBy = deletedBy });
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
         }
     }
 }

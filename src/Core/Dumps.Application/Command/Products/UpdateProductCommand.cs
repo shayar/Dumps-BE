@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Dumps.Application.APIResponse;
 using Dumps.Application.DTO.Request.Products;
 using Dumps.Application.Exceptions;
 using Dumps.Application.ServicesInterfaces;
@@ -78,7 +77,8 @@ namespace Dumps.Application.Command.Products
                         {
                             ProductId = product.Id,
                             VersionNumber = newVersionNumber,
-                            PdfUrl = newPdfUrl
+                            PdfUrl = newPdfUrl,
+                            FileName = request.PdfFile.FileName
                         };
 
                         _context.ProductVersions.Add(newProductVersion);
@@ -102,9 +102,9 @@ namespace Dumps.Application.Command.Products
                     _logger.LogError(ex, "Error occurred while updating the product.");
                     throw new RestException(HttpStatusCode.InternalServerError, "An error occurred while updating the product.");
                 }
-            } 
+            }
         }
-        
+
     }
  }
 

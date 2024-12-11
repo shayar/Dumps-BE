@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Net;
-using Dumps.Application.APIResponse;
 using Dumps.Application.DTO.Response.Bundles;
+using Dumps.Application.DTO.Response.Products;
 using Dumps.Application.Exceptions;
 using Dumps.Domain.Entities;
 using Dumps.Persistence.DbContext;
@@ -15,9 +15,22 @@ namespace Dumps.Application.Query.Bundles
     {
         public class GetAllBundlesQuery : IRequest<APIResponse<IList<CreateBundleResponse>>>
         {
+            public string? Sort { get; }
+            public int Page { get; }
+            public int Limit { get; }
+            public string? Search { get; }
+
+            public GetAllBundlesQuery(string? sort = null, int page = 1, int limit = 10, string? search = null)
+            {
+                Sort = sort;
+                Page = page;
+                Limit = limit;
+                Search = search;
+            }
         }
 
-        public class GetAllBundlesQueryHandler : IRequestHandler<GetAllBundlesQuery, APIResponse<IList<CreateBundleResponse>>>
+        public class
+            GetAllBundlesQueryHandler : IRequestHandler<GetAllBundlesQuery, APIResponse<IList<CreateBundleResponse>>>
         {
             private readonly AppDbContext _dbContext;
             private readonly ILogger<GetAllBundlesQueryHandler> _logger;
@@ -28,30 +41,62 @@ namespace Dumps.Application.Query.Bundles
                 _logger = logger;
             }
 
-            public async Task<APIResponse<IList<CreateBundleResponse>>> Handle(GetAllBundlesQuery request, CancellationToken cancellationToken)
+            public async Task<APIResponse<IList<CreateBundleResponse>>> Handle(GetAllBundlesQuery request,
+                CancellationToken cancellationToken)
             {
                 try
                 {
-                    // Filter only non-deleted bundles
-                    Expression<Func<Bundle, bool>> filter = x => !x.IsDeleted;
+                    // filter only not deleted bundles
+                    var query = _dbContext.Bundles.Where(x => !x.IsDeleted);
 
-                    var bundlesList = await _dbContext.Bundles
-                        .Where(filter)
+                    // add search query if present
+                    if (!string.IsNullOrWhiteSpace(request.Search))
+                    {
+                        var searchTerm = request.Search.ToLower();
+                        query = query.Where(x => EF.Functions.Like(x.Title.ToLower(), $"%{searchTerm}%"));
+                    }
+
+                    // Apply sorting
+                    query = request.Sort?.ToLower() switch
+                    {
+                        "price_asc" => query.OrderBy(x =>
+                            x.BundlesProducts.Sum(bp => bp.Product.Price) - x.DiscountedPrice),
+                        "price_desc" => query.OrderByDescending(x =>
+                            x.BundlesProducts.Sum(bp => bp.Product.Price) - x.DiscountedPrice),
+                        "recent" => query.OrderByDescending(x => x.CreatedAt),
+                        _ => query.OrderByDescending(x => x.CreatedAt) // default sorting
+                    };
+
+                    var totalItems = await query.CountAsync(cancellationToken);
+
+                    var bundlesList = await query
+                        .Skip((request.Page - 1) * request.Limit)
+                        .Take(request.Limit)
                         .Include(b => b.BundlesProducts)
                         .ThenInclude(bp => bp.Product)
-                        .OrderByDescending(b => b.CreatedAt)
                         .Select(b => new CreateBundleResponse
                         {
                             Id = b.Id,
                             Title = b.Title,
                             Description = b.Description,
                             DiscountedPrice = b.DiscountedPrice,
-                            ProductIds = b.BundlesProducts.Select(bp => bp.ProductId).ToList()
+                            TotalPrice = b.BundlesProducts.Sum(bp => bp.Product.Price),
+                            Products = b.BundlesProducts.Select(bp => new ProductResponse
+                            {
+                                Id = bp.Product.Id,
+                                Title = bp.Product.Title,
+                                Description = bp.Product.Description,
+                                Price = bp.Product.Price,
+                                Discount = bp.Product.Discount,
+                                CodeTitle = bp.Product.CodeTitle,
+                                CurrentVersion = null
+                            }).ToList()
                         })
                         .ToListAsync(cancellationToken)
                         .ConfigureAwait(false);
 
-                    return new APIResponse<IList<CreateBundleResponse>>(bundlesList, "Bundles retrieved successfully.");
+                    return new APIResponse<IList<CreateBundleResponse>>(bundlesList, "Bundles retrieved successfully.",
+                        request.Page, request.Limit, totalItems);
                 }
                 catch (Exception ex)
                 {
