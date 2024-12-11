@@ -16,6 +16,8 @@ namespace Dumps.Persistence.DbContext
         public DbSet<BundlesProducts> BundlesProducts { get; set; }
 
         public DbSet<ContactUs> ContactUsMessages { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,6 +44,12 @@ namespace Dumps.Persistence.DbContext
                 .HasOne(bp => bp.Product)
                 .WithMany(p => p.BundlesProducts)
                 .HasForeignKey(bp => bp.ProductId);
+
+            modelBuilder.Entity<Cart>()
+        .HasOne(c => c.User)
+        .WithMany()
+        .HasForeignKey(c => c.UserId)
+        .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
