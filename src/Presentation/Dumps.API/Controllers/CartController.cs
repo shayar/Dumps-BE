@@ -2,9 +2,7 @@
 using System.Net;
 using Dumps.Application.Command.Cart;
 using Dumps.Application.DTO.Response.Cart;
-using Dumps.Application.DTO.Response.Products;
 using Dumps.Application.Query.Cart;
-using Dumps.Application.Query.Products;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
