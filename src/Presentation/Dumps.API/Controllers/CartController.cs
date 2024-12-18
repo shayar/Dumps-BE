@@ -1,6 +1,8 @@
 ﻿
 using System.Net;
 using Dumps.Application.Command.Cart;
+using Dumps.Application.DTO.Response.Cart;
+using Dumps.Application.Query.Cart;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +26,13 @@ namespace Dumps.API.Controllers
 
             var result = await Mediator.Send(command);
             return Ok(result);
+        }
+
+
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<APIResponse<CartResponse>>> GetCartItemsByUserId(string userId)
+        {
+            return await Mediator.Send(new GetCartItemByUserId.GetCartItemsByUserIdQuery { UserId = userId });
         }
     }
 }
