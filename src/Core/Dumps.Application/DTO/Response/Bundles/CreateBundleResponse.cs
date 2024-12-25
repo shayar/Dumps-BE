@@ -10,6 +10,8 @@ namespace Dumps.Application.DTO.Response.Bundles
         public decimal DiscountedPrice { get; set; }
         public decimal TotalPrice { get; set; }
 
+        public bool IsBundle { get; set; } = true;
+
         public IList<ProductResponse> Products { get; set; }
     }
 }
