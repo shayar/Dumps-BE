@@ -24,5 +24,19 @@ namespace Dumps.API.Controllers
             var result = await Mediator.Send(command);
             return Ok(result);
         }
+
+        /// <summary>
+        /// Clear all items from the user's cart.
+        /// </summary>
+        /// <returns>APIResponse indicating the result of the operation.</returns>
+        [HttpDelete("clear")]
+        [ProducesResponseType(typeof(APIResponse<string>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> ClearCart()
+        {
+            var result = await Mediator.Send(new ClearCartCommand());
+            return Ok(result);
+        }
     }
 }
