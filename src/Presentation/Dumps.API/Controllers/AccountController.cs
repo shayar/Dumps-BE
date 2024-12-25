@@ -1,5 +1,4 @@
-﻿using Dumps.Application.APIResponse;
-using Dumps.Application.Command.RegisterUser;
+﻿using Dumps.Application.Command.RegisterUser;
 using Dumps.Application.DTO.Response.Auth;
 using Dumps.Application.Query;
 using Microsoft.AspNetCore.Mvc;
@@ -13,12 +12,12 @@ namespace Dumps.API.Controllers
         {
             var result = await Mediator.Send(command);
 
-            if (result.Succeeded)
+            if (result.Success)
             {
-                return Ok("User registered successfully.");
+                return Ok(new {result.Message, result.Data});
             }
 
-            return BadRequest(result.Errors.Select(e => e.Description));
+            return BadRequest(result.Message);
         }
 
         [HttpPost("Login")]

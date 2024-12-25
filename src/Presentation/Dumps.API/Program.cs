@@ -67,7 +67,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy",
-        policy => { policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5173", "http://localhost:8080"); });
+        policy => { policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5173", "https://dumps.onrender.com", "http://localhost:8080"); });
 });
 
 // Registering Identity
@@ -85,6 +85,8 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
     })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
