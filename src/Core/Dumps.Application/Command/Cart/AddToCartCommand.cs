@@ -1,9 +1,11 @@
 ﻿using System.Net;
+using System.Security.Claims;
 using Dumps.Application.DTO.Request.Cart;
 using Dumps.Application.Exceptions;
 using Dumps.Domain.Entities;
 using Dumps.Persistence.DbContext;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -11,24 +13,30 @@ namespace Dumps.Application.Command.Cart
 {
     public class AddToCartCommand : AddToCartRequest, IRequest<APIResponse<Guid>>
     {
-        public string UserId { get; set; }
     }
     public class AddToCartCommandHandler : IRequestHandler<AddToCartCommand, APIResponse<Guid>>
     {
         private readonly AppDbContext _context;
         private readonly ILogger<AddToCartCommandHandler> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AddToCartCommandHandler(AppDbContext context, ILogger<AddToCartCommandHandler> logger)
+        public AddToCartCommandHandler(AppDbContext context, ILogger<AddToCartCommandHandler> logger, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<APIResponse<Guid>> Handle(AddToCartCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var userId = request.UserId;
+                var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    throw new RestException(HttpStatusCode.Unauthorized, "User is not authorized.");
+                }
 
                 // Get or create the user's cart
                 var cart = await _context.Carts

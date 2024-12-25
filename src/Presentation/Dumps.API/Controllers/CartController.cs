@@ -21,12 +21,6 @@ namespace Dumps.API.Controllers
         [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartCommand command)
         {
-            command.UserId = User.FindFirst("nameid")?.Value; // Assuming "nameid" contains the UserId
-
-            if (string.IsNullOrEmpty(command.UserId))
-            {
-                throw new RestException(HttpStatusCode.Unauthorized, "User is not authorized.");
-            }
             var result = await Mediator.Send(command);
             return Ok(result);
         }
