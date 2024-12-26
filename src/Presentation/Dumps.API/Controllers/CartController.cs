@@ -1,5 +1,4 @@
-﻿
-using System.Net;
+﻿using System.Net;
 using Dumps.Application.Command.Cart;
 using Dumps.Application.DTO.Response.Cart;
 using Dumps.Application.Query.Cart;
@@ -27,10 +26,11 @@ namespace Dumps.API.Controllers
         }
 
 
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<APIResponse<CartResponse>>> GetCartItemsByUserId(string userId)
+        [HttpGet("getByUserId")]
+        public async Task<ActionResult<APIResponse<CartResponse>>> GetCartItemsByUserId()
         {
-            return await Mediator.Send(new GetCartItemByUserId.GetCartItemsByUserIdQuery { UserId = userId });
+            var result = await Mediator.Send(new GetCartItemByUserId.GetCartItemsByUserIdQuery());
+            return Ok(result);
         }
 
         /// <summary>

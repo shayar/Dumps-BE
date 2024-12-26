@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dumps.Application.DTO.Response.Products;
+using Dumps.Domain.Entities;
 
 namespace Dumps.Application.DTO.Response.Cart
 {
@@ -11,18 +13,6 @@ namespace Dumps.Application.DTO.Response.Cart
         public Guid CartId { get; set; }
         public string UserId { get; set; }
         public decimal TotalPrice { get; set; }
-        public List<CartItemResponse> CartItems { get; set; }
-    }
-
-    
-    public class CartItemResponse
-    {
-        public Guid CartItemId { get; set; }
-        public Guid? ProductId { get; set; }
-        public string ProductTitle { get; set; }
-        public decimal? ProductPrice { get; set; }
-        public Guid? BundleId { get; set; }
-        public string BundleTitle { get; set; }
-        public decimal ItemPrice { get; set; }
+        public List<object> Items { get; set; }
     }
 }
