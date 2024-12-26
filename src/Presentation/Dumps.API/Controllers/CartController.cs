@@ -1,7 +1,7 @@
-﻿
-using System.Net;
+﻿using System.Net;
 using Dumps.Application.Command.Cart;
-using Dumps.Application.Exceptions;
+using Dumps.Application.DTO.Response.Cart;
+using Dumps.Application.Query.Cart;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +22,14 @@ namespace Dumps.API.Controllers
         public async Task<IActionResult> AddToCart([FromBody] AddToCartCommand command)
         {
             var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+
+
+        [HttpGet("getByUserId")]
+        public async Task<ActionResult<APIResponse<CartResponse>>> GetCartItemsByUserId()
+        {
+            var result = await Mediator.Send(new GetCartItemByUserId.GetCartItemsByUserIdQuery());
             return Ok(result);
         }
 
