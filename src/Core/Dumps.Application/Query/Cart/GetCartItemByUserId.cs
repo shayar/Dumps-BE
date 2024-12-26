@@ -68,7 +68,7 @@ namespace Dumps.Application.Query.Cart
                     // Map cart items to response
                     var cartResponse = new CartResponse
                     {
-                        CartId = cart.Id,
+                        Id = cart.Id,
                         UserId = cart.UserId,
                         TotalPrice = cart.TotalPrice,
                         Items = cart.CartItems.Select(ci =>

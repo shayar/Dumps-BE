@@ -10,7 +10,7 @@ namespace Dumps.Application.DTO.Response.Cart
 {
     public class CartResponse
     {
-        public Guid CartId { get; set; }
+        public Guid Id { get; set; }
         public string UserId { get; set; }
         public decimal TotalPrice { get; set; }
         public List<object> Items { get; set; }
