@@ -1,7 +1,7 @@
-﻿
-using System.Net;
+﻿using System.Net;
 using Dumps.Application.Command.Cart;
-using Dumps.Application.Exceptions;
+using Dumps.Application.DTO.Response.Cart;
+using Dumps.Application.Query.Cart;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +22,28 @@ namespace Dumps.API.Controllers
         public async Task<IActionResult> AddToCart([FromBody] AddToCartCommand command)
         {
             var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+
+
+        [HttpGet("getByUserId")]
+        public async Task<ActionResult<APIResponse<CartResponse>>> GetCartItemsByUserId()
+        {
+            var result = await Mediator.Send(new GetCartItemByUserId.GetCartItemsByUserIdQuery());
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Clear all items from the user's cart.
+        /// </summary>
+        /// <returns>APIResponse indicating the result of the operation.</returns>
+        [HttpDelete("clear")]
+        [ProducesResponseType(typeof(APIResponse<string>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> ClearCart()
+        {
+            var result = await Mediator.Send(new ClearCartCommand());
             return Ok(result);
         }
     }
