@@ -57,23 +57,31 @@ public class Login
                 throw new RestException(HttpStatusCode.Unauthorized, "Invalid email or password");
             }
 
-            var token = GenerateJwtToken(user, _configuration);
+            var token = await GenerateJwtToken(user, _configuration);
 
             return new APIResponse<LoginResponse>(new LoginResponse(user, token), "Login successful");
         }
 
-        private string GenerateJwtToken(ApplicationUser user, IConfiguration configuration)
+        private async Task<string> GenerateJwtToken(ApplicationUser user, IConfiguration configuration)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(configuration["Jwt:Secret"]);
 
+            // Retrieve roles for the user
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName)
+            };
+
+            // Add role claims
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id),
-                    new Claim(ClaimTypes.Name, user.UserName)
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(configuration["Jwt:ExpirationInMinutes"])),
                 SigningCredentials =
                     new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
