@@ -67,7 +67,12 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy",
-        policy => { policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5173", "https://dumps.onrender.com", "http://localhost:8080"); });
+        policy =>
+        {
+            policy.AllowAnyHeader().AllowAnyMethod()
+                .WithOrigins("http://localhost:5173", "https://dumps.onrender.com", "http://localhost:8080")
+                .AllowCredentials();
+        });
 });
 
 // Registering Identity
