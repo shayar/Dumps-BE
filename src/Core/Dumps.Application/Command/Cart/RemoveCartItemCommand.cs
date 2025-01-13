@@ -25,6 +25,13 @@ namespace Dumps.Application.Command.Cart
         private readonly ILogger<RemoveCartItemCommandHandler> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
+        public RemoveCartItemCommandHandler(AppDbContext context, ILogger<RemoveCartItemCommandHandler> logger, IHttpContextAccessor httpContextAccessor)
+        {
+            _context = context;
+            _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
         public async Task<APIResponse<string>> Handle(RemoveCartItemCommand request, CancellationToken cancellationToken)
         {
             try
