@@ -1,4 +1,5 @@
 ﻿using Dumps.Domain.Entities;
+using Dumps.Persistence.Configurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,10 +19,14 @@ namespace Dumps.Persistence.DbContext
         public DbSet<ContactUs> ContactUsMessages { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<PromoCode> PromoCodes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Apply configuration for PromoCode
+            modelBuilder.ApplyConfiguration(new PromoCodeConfiguration());
 
             // One-to-many relationship between Product and ProductVersion
             modelBuilder.Entity<Products>()
