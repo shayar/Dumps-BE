@@ -47,7 +47,7 @@ namespace Dumps.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("remove-cartitem")]
+        [HttpDelete("remove")]
         public async Task<IActionResult> RemoveCartItem([FromBody] RemoveCartItemCommand command)
         {
             var response = await Mediator.Send(command);
