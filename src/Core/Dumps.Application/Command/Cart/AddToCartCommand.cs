@@ -40,71 +40,71 @@ namespace Dumps.Application.Command.Cart
 
                 // Get or create the user's cart
                 var cart = await _context.Carts
-                    .Include(c => c.CartItems)
-                    .ThenInclude(ci => ci.Product)
-                    .Include(c => c.CartItems)
-                    .ThenInclude(ci => ci.Bundle)
-                    .FirstOrDefaultAsync(c => c.UserId == userId, cancellationToken);
+                .Include(c => c.CartItems)
+                .FirstOrDefaultAsync(c => c.UserId == userId, cancellationToken);
 
 
                 if (cart == null)
                 {
                     cart = new Dumps.Domain.Entities.Cart { UserId = userId };
                     _context.Carts.Add(cart);
+                    await _context.SaveChangesAsync(cancellationToken);
                 }
 
                 // Add products to cart
-                if (request.ProductIds != null && request.ProductIds.Any())
+                if (request.ProductId.HasValue)
                 {
-                    foreach (var productId in request.ProductIds)
+                    // Validate product existence
+                    var productExists = await _context.Products
+               .AnyAsync(p => p.Id == request.ProductId && !p.IsDeleted, cancellationToken);
+
+                    if (!productExists)
                     {
-                        // Validate product existence
-                        var product = await _context.Products
-                            .FirstOrDefaultAsync(p => p.Id == productId && !p.IsDeleted, cancellationToken);
+                        throw new RestException(HttpStatusCode.NotFound, $"Product with ID {request.ProductId} not found.");
+                    }
 
-                        if (product == null)
+                    // Check if the product is already in the cart
+                    if (!cart.CartItems.Any(ci => ci.ProductId == request.ProductId))
+                    {
+                        cart.CartItems.Add(new CartItem
                         {
-                            throw new RestException(HttpStatusCode.NotFound, $"Product with ID {productId} not found.");
-                        }
-
-                        // Check if the product is already in the cart
-                        if (!cart.CartItems.Any(ci => ci.ProductId == productId))
-                        {
-                            var cartItem = new CartItem
-                            {
-                                ProductId = productId,
-                                CartId = cart.Id
-                            };
-                            cart.CartItems.Add(cartItem);
-                        }
+                            ProductId = request.ProductId,
+                            CartId = cart.Id
+                        });
+                    }
+                    else
+                    {
+                        throw new RestException(HttpStatusCode.Conflict, "Product already exists in cart.");
                     }
                 }
 
                 // Add bundles to cart
-                if (request.BundleIds != null && request.BundleIds.Any())
+                else if (request.BundleId.HasValue)
                 {
-                    foreach (var bundleId in request.BundleIds)
+                    var bundleExists = await _context.Bundles
+                        .AnyAsync(b => b.Id == request.BundleId && !b.IsDeleted, cancellationToken);
+
+                    if (!bundleExists)
                     {
-                        // Validate bundle existence
-                        var bundle = await _context.Bundles
-                            .FirstOrDefaultAsync(b => b.Id == bundleId && !b.IsDeleted, cancellationToken);
-
-                        if (bundle == null)
-                        {
-                            throw new RestException(HttpStatusCode.NotFound, $"Bundle with ID {bundleId} not found.");
-                        }
-
-                        // Check if the bundle is already in the cart
-                        if (!cart.CartItems.Any(ci => ci.BundleId == bundleId))
-                        {
-                            var cartItem = new CartItem
-                            {
-                                BundleId = bundleId,
-                                CartId = cart.Id
-                            };
-                            cart.CartItems.Add(cartItem);
-                        }
+                        throw new RestException(HttpStatusCode.NotFound, $"Bundle with ID {request.BundleId} not found.");
                     }
+
+                    if (!cart.CartItems.Any(ci => ci.BundleId == request.BundleId))
+                    {
+                        cart.CartItems.Add(new CartItem
+                        {
+                            BundleId = request.BundleId,
+                            CartId = cart.Id
+                        });
+                    }
+                    else
+                    {
+                        throw new RestException(HttpStatusCode.Conflict, "Bundle already exists in cart.");
+                    }
+                }
+                else
+                {
+                    throw new RestException(HttpStatusCode.BadRequest, "Either ProductId or BundleId must be provided.");
                 }
 
                 await _context.SaveChangesAsync(cancellationToken);
