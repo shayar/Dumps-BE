@@ -105,6 +105,11 @@ namespace Dumps.Application.Query.Cart
 
                     return new APIResponse<CartResponse>(cartResponse, "Cart items retrieved successfully.");
                 }
+                catch (RestException ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                    throw; // Let the exception propagate with the proper status code
+                }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error occurred while retrieving cart items.");

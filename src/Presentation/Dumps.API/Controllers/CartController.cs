@@ -46,5 +46,23 @@ namespace Dumps.API.Controllers
             var result = await Mediator.Send(new ClearCartCommand());
             return Ok(result);
         }
+
+        [HttpDelete("remove")]
+        public async Task<IActionResult> RemoveCartItem([FromBody] RemoveCartItemCommand command)
+        {
+            var response = await Mediator.Send(command);
+            return Ok(response);
+
+        }
+
+        [HttpPost("apply-promo")]
+        [ProducesResponseType(typeof(APIResponse<decimal>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> ApplyPromoCode([FromBody] ApplyPromoCodeCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
     }
 }

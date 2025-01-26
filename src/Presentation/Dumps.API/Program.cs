@@ -28,6 +28,23 @@ builder.Services.AddControllers(options =>
     options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 });
 
+// Registering Identity
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
+    {
+        // configure identity options
+        o.Password.RequireDigit = true;
+        o.Password.RequireLowercase = true;
+        o.Password.RequireUppercase = true;
+        o.Password.RequireNonAlphanumeric = true;
+        o.Password.RequiredLength = 6;
+        o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        o.Lockout.MaxFailedAccessAttempts = 5;
+        o.User.RequireUniqueEmail = true;
+    })
+
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPersistence(builder.Configuration);
@@ -67,24 +84,13 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy",
-        policy => { policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5173", "https://dumps.onrender.com", "http://localhost:8080"); });
+        policy =>
+        {
+            policy.AllowAnyHeader().AllowAnyMethod()
+                .WithOrigins("http://localhost:5173", "https://dumps.onrender.com", "http://localhost:8080")
+                .AllowCredentials();
+        });
 });
-
-// Registering Identity
-builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
-    {
-        // configure identity options
-        o.Password.RequireDigit = true;
-        o.Password.RequireLowercase = true;
-        o.Password.RequireUppercase = true;
-        o.Password.RequireNonAlphanumeric = true;
-        o.Password.RequiredLength = 6;
-        o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-        o.Lockout.MaxFailedAccessAttempts = 5;
-        o.User.RequireUniqueEmail = true;
-    })
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
 
 builder.Services.AddHttpContextAccessor();
 
