@@ -10,6 +10,7 @@ using Dumps.Application.DTO.Response.Bundles;
 using Dumps.Application.DTO.Response.Cart;
 using Dumps.Application.DTO.Response.Products;
 using Dumps.Application.Exceptions;
+using Dumps.Domain.Entities;
 using Dumps.Persistence.DbContext;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -62,7 +63,15 @@ namespace Dumps.Application.Query.Cart
 
                     if (cart == null || cart.CartItems.Count == 0)
                     {
-                        throw new RestException(HttpStatusCode.NotFound, "No cart items found for the user.");
+                        var emptyCartResponse = new CartResponse
+                        {
+                            Id = Guid.NewGuid(), // Generate a unique ID or set to default if not needed
+                            UserId = userId,
+                            TotalPrice = 0, // Total price is 0 for an empty cart
+                            Items = new List<object>() // Initialize with an empty list of items
+                        };
+
+                        return new APIResponse<CartResponse>(emptyCartResponse, "Cart is empty.");
                     }
 
                     // Map cart items to response
