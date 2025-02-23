@@ -4,7 +4,7 @@ namespace Dumps.Application.DTO.Request.Cart
 {
     public class AddToCartRequest
     {
-        public IList<Guid> ProductIds { get; set; }
-        public IList<Guid> BundleIds { get; set; }
+        public Guid? ProductId { get; set; }
+        public Guid? BundleId { get; set; }
     }
 }
