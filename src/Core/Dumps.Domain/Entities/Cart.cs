@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Dumps.Domain.Common.Enums;
 
 namespace Dumps.Domain.Entities
 {
@@ -12,6 +13,9 @@ namespace Dumps.Domain.Entities
 
         // Total price of the cart, calculated dynamically
         [NotMapped]
-        public decimal TotalPrice => CartItems.Sum(item => item.ItemPrice);
+        public decimal TotalPrice => CartItems?.Sum(item => item.ItemPrice) ?? 0;
+
+        // Cart status for better management (optional)
+        public CartStatus Status { get; set; } = CartStatus.Active;
     }
 }
