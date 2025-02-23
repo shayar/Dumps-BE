@@ -58,12 +58,19 @@ namespace Dumps.Application.Command.Cart
                     throw new RestException(HttpStatusCode.BadRequest, "Invalid or expired promo code.");
                 }
 
+                // Ensure the promo code is not already applied
+                if (cart.AppliedPromoCode == request.PromoCode)
+                {
+                    throw new RestException(HttpStatusCode.BadRequest, "Promo code is already applied.");
+                }
+
                 // Calculate discount
                 decimal discount = 0;
+                decimal cartTotal = cart.CartItems.Sum(ci => ci.Product.Price);
                 switch (promo.DiscountType)
                 {
                     case DiscountType.Percentage:
-                        discount = cart.CartItems.Sum(ci => ci.Product.Price) * promo.DiscountValue / 100;
+                        discount = cartTotal * promo.DiscountValue / 100;
                         break;
                     case DiscountType.Flat:
                         discount = promo.DiscountValue;
@@ -71,6 +78,12 @@ namespace Dumps.Application.Command.Cart
                 }
 
                 discount = Math.Min(discount, promo.MaxDiscount);
+
+                // Store the applied promo code and discount in the cart
+                cart.AppliedPromoCode = promo.Code;
+                cart.PromoDiscount = discount;
+
+                await _context.SaveChangesAsync(cancellationToken);
 
                 return new APIResponse<decimal>(discount, "Promo code applied successfully.");
             }

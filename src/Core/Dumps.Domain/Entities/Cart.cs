@@ -17,5 +17,13 @@ namespace Dumps.Domain.Entities
 
         // Cart status for better management (optional)
         public CartStatus Status { get; set; } = CartStatus.Active;
+
+        // Applied Promo Code
+        public string? AppliedPromoCode { get; set; }
+
+        // Discount applied due to promo code
+        public decimal PromoDiscount { get; set; } = 0;
+
+
     }
 }
