@@ -64,5 +64,15 @@ namespace Dumps.API.Controllers
             var result = await Mediator.Send(command);
             return Ok(result);
         }
+
+        [HttpPost("remove-promo")]
+        [ProducesResponseType(typeof(APIResponse<string>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> RemovePromoCode()
+        {
+            var result = await Mediator.Send(new RemovePromoCodeCommand());
+            return Ok(result);
+        }
     }
 }
