@@ -60,5 +60,22 @@ namespace Dumps.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Update an existing promo code (Admin only).
+        /// </summary>
+        /// <param name="id">The ID of the promo code to update.</param>
+        /// <param name="command">The updated promo code details.</param>
+        /// <returns>APIResponse with the updated promo code details.</returns>
+        [HttpPut("update/{id}")]
+        [ProducesResponseType(typeof(APIResponse<PromoCodeResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(APIResponse<object>), (int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> UpdatePromoCode(Guid id, [FromBody] UpdatePromoCodeCommand command)
+        {
+            command.Id = id; // Ensure ID is passed in the request
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+
     }
 }
