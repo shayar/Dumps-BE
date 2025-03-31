@@ -16,6 +16,12 @@ namespace Dumps.Application.Command.RegisterUser
         {
             public Validator()
             {
+                RuleFor(x => x.FirstName)
+                    .NotEmpty().WithMessage("Firstname is required.");
+
+                RuleFor(x => x.LastName)
+                    .NotEmpty().WithMessage("Lastname is required.");
+
                 RuleFor(x => x.Email)
                     .NotEmpty().WithMessage("Email is required.")
                     .EmailAddress().WithMessage("Invalid email format.");
@@ -39,7 +45,7 @@ namespace Dumps.Application.Command.RegisterUser
             _logger = logger;
         }
 
-      
+
 
         public async Task<APIResponse<object>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
@@ -63,7 +69,7 @@ namespace Dumps.Application.Command.RegisterUser
             using (var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
             {
                 try
-                {    
+                {
                     // Create a new user instance
                     var user = new ApplicationUser
                     {
@@ -135,7 +141,7 @@ namespace Dumps.Application.Command.RegisterUser
 
                 }
             }
-          
+
         }
 
     }

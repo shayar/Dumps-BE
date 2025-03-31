@@ -93,7 +93,7 @@ namespace Dumps.Application.Query.Cart
                                 }
                                 : (object)new CreateBundleResponse
                                 {
-                                    Id = ci.Id,
+                                    Id = ci.Bundle.Id,
                                     Title = ci.Bundle.Title,
                                     Description = ci.Bundle.Description,
                                     DiscountedPrice = ci.Bundle.DiscountedPrice,
