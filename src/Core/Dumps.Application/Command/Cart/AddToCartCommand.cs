@@ -66,11 +66,18 @@ namespace Dumps.Application.Command.Cart
                     // Check if the product is already in the cart
                     if (!cart.CartItems.Any(ci => ci.ProductId == request.ProductId))
                     {
-                        cart.CartItems.Add(new CartItem
+                        var cartItem = new CartItem
                         {
                             ProductId = request.ProductId,
                             CartId = cart.Id
-                        });
+                        };
+                        _context.CartItems.Add(cartItem);
+                        // cart.CartItems.Add(new CartItem
+                        // {
+                        //     Id = Guid.NewGuid(),
+                        //     ProductId = request.ProductId,
+                        //     CartId = cart.Id
+                        // });
                     }
                     else
                     {
@@ -91,11 +98,13 @@ namespace Dumps.Application.Command.Cart
 
                     if (!cart.CartItems.Any(ci => ci.BundleId == request.BundleId))
                     {
-                        cart.CartItems.Add(new CartItem
+                        var cartItem = new CartItem
                         {
+
                             BundleId = request.BundleId,
                             CartId = cart.Id
-                        });
+                        };
+                        _context.CartItems.Add(cartItem);
                     }
                     else
                     {
