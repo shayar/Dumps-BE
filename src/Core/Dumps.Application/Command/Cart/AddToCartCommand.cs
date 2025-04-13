@@ -72,12 +72,6 @@ namespace Dumps.Application.Command.Cart
                             CartId = cart.Id
                         };
                         _context.CartItems.Add(cartItem);
-                        // cart.CartItems.Add(new CartItem
-                        // {
-                        //     Id = Guid.NewGuid(),
-                        //     ProductId = request.ProductId,
-                        //     CartId = cart.Id
-                        // });
                     }
                     else
                     {
