@@ -23,6 +23,7 @@ namespace Dumps.Infrastructure.Extensions
             // services.AddScoped<IExternalApiService, ExternalApiService>();
             // services.AddScoped<IEmailService, SmtpEmailService>();
             services.AddScoped<IStorageService, CloudinaryStorageService>();
+            services.AddScoped<IPaymentService, PaymentService>();
 
             return services;
         }
