@@ -74,5 +74,12 @@ namespace Dumps.API.Controllers
             var result = await Mediator.Send(new RemovePromoCodeCommand());
             return Ok(result);
         }
+
+        [HttpPost("payment-intent")]
+        public async Task<IActionResult> CreatePaymentIntent()
+        {
+            var result = await Mediator.Send(new CreatePaymentIntentCommand());
+            return Ok(result);
+        }
     }
 }
