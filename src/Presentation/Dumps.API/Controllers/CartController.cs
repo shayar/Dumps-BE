@@ -4,6 +4,7 @@ using Dumps.Application.DTO.Response.Cart;
 using Dumps.Application.Query.Cart;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace Dumps.API.Controllers
 {
@@ -52,7 +53,6 @@ namespace Dumps.API.Controllers
         {
             var response = await Mediator.Send(command);
             return Ok(response);
-
         }
 
         [HttpPost("apply-promo")]
@@ -80,6 +80,21 @@ namespace Dumps.API.Controllers
         {
             var result = await Mediator.Send(new CreatePaymentIntentCommand());
             return Ok(result);
+        }
+
+        [HttpPost("payment-hook")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Post()
+        {
+            try
+            {
+                await Mediator.Send(new PaymentWebhookCommand());
+                return new EmptyResult(); // 200 OK with no content
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(); // 400 Bad Request
+            }
         }
     }
 }
