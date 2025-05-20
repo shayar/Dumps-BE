@@ -59,7 +59,7 @@ namespace Dumps.Application.Command.Cart
 
                 // Create Payment Intent
                 string clientSecret =
-                    await _paymentService.CreatePaymentIntent((long)Convert.ToInt64(Math.Round(cart.TotalPrice * 100)));
+                    await _paymentService.CreatePaymentIntent((long)Convert.ToInt64(Math.Round(cart.TotalPrice * 100)), userId);
 
                 _logger.LogInformation($"Cart cleared successfully for user {userId}.");
                 return new APIResponse<string>(clientSecret, "Payment Intent Created Successfully.");
